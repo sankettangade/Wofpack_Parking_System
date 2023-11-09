@@ -3,7 +3,7 @@ CREATE TABLE User (
            	userID VARCHAR(16),
            	name VARCHAR(128) NOT NULL,
             status CHAR(2),
-            password VARCHAR(50),
+            password VARCHAR(50) DEFAULT '12345',
            	PRIMARY KEY(userID)
 );
 
