@@ -7,17 +7,17 @@ INSERT INTO Vehicle (carLicenseNo, model, color, manufacturer, year) VALUES
 ('PROFX', 'Taycan Sport Turismo', 'Frozenblue Metallic', 'Porsche', 2024);
 
 
-INSERT INTO User (userID, name) VALUES
-('7729119111', 'Sam BankmanFried'),
-('266399121', 'John Clay'),
-('366399121', 'Julia Hicks'),
-('466399121', 'Ivan Garcia'),
-('122765234', 'Sachin Tendulkar'),
-('9194789124', 'Charles Xavier'),
-('488213007', 'Matthew Geller'),
-('789214567', 'Virat Kohli'),
-('985467810', 'Monica Perry'),
-('985312442', 'Ishan Kishan');
+INSERT INTO User (userID, name, status, password) VALUES
+('7729119111', 'Sam BankmanFried', 'V', 'sam123'),
+('266399121', 'John Clay', 'E', 'newuser'),
+('366399121', 'Julia Hicks', 'E', 'julys24'),
+('466399121', 'Ivan Garcia', 'E', 'sunshine'),
+('122765234', 'Sachin Tendulkar', 'S', 'lovecricket'),
+('9194789124', 'Charles Xavier', 'V', 'xmen123'),
+('488213007', 'Matthew Geller', 'A', 'imp124'),
+('789214567', 'Virat Kohli', 'A', 'four4ssix6s'),
+('985467810', 'Monica Perry', 'SP', 'friends4'),
+('985312442', 'Ishan Kishan', 'SP', 'bat9bowl');
 
 
 INSERT INTO Driver (userID, disabilityStatus) VALUES
