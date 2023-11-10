@@ -46,6 +46,8 @@ public class LoginApplication {
                                     break;
                                 case "A":
                                     System.out.println("Welcome Admin");
+                                    Admin admin = new Admin(userID);
+                                    admin.show_welcome_page();
                                     break;
                                 case "SP":
                                     System.out.println("Welcome Security Personnel");

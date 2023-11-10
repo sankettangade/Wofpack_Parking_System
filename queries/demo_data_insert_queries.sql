@@ -45,9 +45,9 @@ INSERT INTO Student (userID, carLicenseNo) VALUES
 
 
 INSERT INTO ParkingLot (parkingLotID, name, address) VALUES
-('PL1', 'Poulton Deck', '1021 Main Campus Dr\nRaleigh, NC, 27606'),
-('PL2', 'Partners Way Deck', '851 Partners Way\nRaleigh, NC, 27606'),
-('PL3', 'Dan Allen Parking Deck', '110 Dan Allen Dr\nRaleigh, NC, 27607');
+('PL1', 'Poulton Deck', '1021 Main Campus Dr Raleigh, NC, 27606'),
+('PL2', 'Partners Way Deck', '851 Partners Way Raleigh, NC, 27606'),
+('PL3', 'Dan Allen Parking Deck', '110 Dan Allen Dr Raleigh, NC, 27607');
 
 
 INSERT INTO Citations (citationNumber, carLicenseNo, parkingLotID, citationDate, citationTime, category, fee, paymentStatus) VALUES
