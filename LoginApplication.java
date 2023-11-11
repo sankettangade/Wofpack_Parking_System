@@ -131,7 +131,7 @@ public class LoginApplication {
             case "S":
             case "E":
             case "V":
-                System.out.println("Enter disability status (Y/N):");
+                System.out.println("Enter disability status (D/N), D: Diabled, N: No:");
                 String disabilityStatus = scanner.nextLine().toUpperCase();
                 return insertIntoDriver(conn, userID, disabilityStatus);
             default:
