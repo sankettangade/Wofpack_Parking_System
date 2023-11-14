@@ -20,61 +20,95 @@ public class LoginApplication {
             String url = prop.getProperty("db.url");
             String user = prop.getProperty("db.user");
             String dbPassword = prop.getProperty("db.password");
-
-            System.out.println("Enter user ID:");
-            String userID = scanner.nextLine();
-            System.out.println("Enter password:");
-            String userPassword = scanner.nextLine();
-
-            try (Connection conn = DriverManager.getConnection(url, user, dbPassword)) {
-                String sql = "SELECT status, password FROM User WHERE userID = ?";
-                
-                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    stmt.setString(1, userID);
-                    ResultSet rs = stmt.executeQuery();
-
-                    if (rs.next()) {
-                        String actualPassword = rs.getString("password");
-                        if (actualPassword.equals(userPassword)) {
-                            String status = rs.getString("status");
-                            switch (status) {
-                                case "S":
-                                case "E":
-                                case "V":
-                                    System.out.println("Welcome Driver");
-                                    break;
-                                case "A":
-                                    System.out.println("Welcome Admin");
-                                    Admin admin = new Admin(userID);
-                                    admin.show_welcome_page();
-                                    break;
-                                case "SP":
-                                    System.out.println("Welcome Security Personnel");
-                                    SecurityPersonnel securityPersonnel = new SecurityPersonnel(userID);
-                                    securityPersonnel.showMenu();
-                                    break;
-                                default:
-                                    System.out.println("Unknown status");
-                                    break;
-                            }
-                        } else {
-                            System.out.println("Wrong password.");
-                        }
-                    } else {
-                        System.out.println("UserID not found. Would you like to create a new account? (yes/no)");
-                        String response = scanner.nextLine();
-                        if ("yes".equalsIgnoreCase(response)) {
-                            createUserAccount(scanner, conn);
-                        }
-                    }
+            Connection conn = DriverManager.getConnection(url, user, dbPassword);
+            conn.setAutoCommit(false);
+            
+            int choice = 0;
+            do {
+                System.out.println("\nWelcome User!");
+                System.out.println("-----------------------------------------------");
+            System.out.println("1. Login");
+            System.out.println("2. New Driver Sign-up");
+            System.out.println("3. Exit");
+            choice = scanner.nextInt();
+                switch (choice) {
+                    case 1:
+                    	login(scanner, conn);
+                        break;
+                    case 2:
+                    	createUserAccount(scanner, conn);
+                        break;
+  
+                    case 3:
+                        System.out.println("Exiting. Goodbye!");
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
                 }
-            }
+            } while (choice != 5);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    
+    private static void login(Scanner scanner, Connection conn) throws SQLException {
+    	
+    	scanner.nextLine();
+    	System.out.println("Enter user ID:");
+    	String userID = scanner.nextLine();
+        System.out.println("Enter password:");
+        String userPassword = scanner.nextLine();
+
+         String sql = "SELECT status, password FROM User WHERE userID = ?";
+            
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, userID);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String actualPassword = rs.getString("password");
+                if (actualPassword.equals(userPassword)) {
+                    String status = rs.getString("status");
+                    switch (status) {
+                        case "S":
+                        case "E":
+                        case "V":
+                            System.out.println("Welcome Driver");
+                            break;
+                        case "A":
+                            System.out.println("Welcome Admin");
+                            Admin admin = new Admin(userID);
+                            admin.show_welcome_page();
+                            break;
+                        case "SP":
+                            System.out.println("Welcome Security Personnel");
+                            SecurityPersonnel securityPersonnel = new SecurityPersonnel(userID);
+                            securityPersonnel.showMenu();
+                            break;
+                        default:
+                            System.out.println("Unknown status");
+                            break;
+                    }
+                } else {
+                    System.out.println("Wrong password.");
+                    conn.commit();
+                }
+            } else {
+                System.out.println("UserID or password not found. Please try again");
+                conn.rollback();
+               
+            }
+        } catch (SQLException e) {
+        	conn.rollback();
+			e.printStackTrace();
+		}
+    	
+    }
     private static void createUserAccount(Scanner scanner, Connection conn) throws SQLException {
+    	
+    	scanner.nextLine();
         System.out.println("Enter new user ID:");
         String newUserID = scanner.nextLine();
         System.out.println("Enter name:");
