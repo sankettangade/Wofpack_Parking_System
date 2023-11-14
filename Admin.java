@@ -49,7 +49,9 @@ public class Admin {
             System.out.println("3. Add/Update/Delete/View Space");
             System.out.println("4. Add/Update/Delete/View Permit");
             System.out.println("5. Add/Update/Delete/View Vehicle");
-            System.out.println("6. Exit");
+            System.out.println("6. Add New Admin");
+            System.out.println("7. Add New Security Personnel");
+            System.out.println("8. Exit");
             System.out.print("Enter your choice: ");
             
             choice = scanner.nextInt();
@@ -71,12 +73,18 @@ public class Admin {
                     vehicleMenu();
                     break;
                 case 6:
+                    insertIntoAdmin(conn);
+                    break;
+                case 7:
+                    insertIntoSecurityPersonnel(conn);
+                    break;
+                case 8:
                     System.out.println("Exiting. Goodbye!");
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
-        } while (choice != 6);
+        } while (choice != 8);
     }
 
     private void parkingLotMenu() {
@@ -87,6 +95,7 @@ public class Admin {
         System.out.println("2. Update Parking Lot");
         System.out.println("3. Delete Parking Lot");
         System.out.println("4. View all parking lots");
+        
         System.out.println("5. Exit");
         // Call respective methods based on user choice
         choice = scanner.nextInt();
@@ -346,6 +355,8 @@ public class Admin {
             System.out.println(e.getMessage());
         }
     }
+    
+   
 
     public void addZone() {
         scanner.nextLine();
@@ -622,6 +633,33 @@ public class Admin {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+    
+    private void insertIntoAdmin(Connection conn) {
+
+        scanner.nextLine();
+        System.out.println("Enter userID for the new Admin: ");
+	   	String userId = scanner.nextLine();
+    	String sql = "INSERT INTO Admin (userID) VALUES (?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, userId);
+            System.out.println("Account created successfully.");
+        } catch (SQLException e) {
+			e.printStackTrace();
+		}
+    }
+
+    private void insertIntoSecurityPersonnel(Connection conn) {
+    	 scanner.nextLine();
+    	 System.out.println("Enter userID for the new Security Personnel: ");
+    	 String userId = scanner.nextLine();
+        String sql = "INSERT INTO SecurityPersonnel (userID) VALUES (?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, userId);
+            System.out.println("Account created successfully.");
+        } catch (SQLException e) {
+			e.printStackTrace();
+		}
     }
 
     // Method to add a new permit
