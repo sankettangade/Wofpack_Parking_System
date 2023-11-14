@@ -17,7 +17,6 @@ public class LoginApplication {
              InputStream input = new FileInputStream("config.properties")) {
             
             prop.load(input);
-
             String url = prop.getProperty("db.url");
             String user = prop.getProperty("db.user");
             String dbPassword = prop.getProperty("db.password");
@@ -51,6 +50,8 @@ public class LoginApplication {
                                     break;
                                 case "SP":
                                     System.out.println("Welcome Security Personnel");
+                                    SecurityPersonnel securityPersonnel = new SecurityPersonnel(userID);
+                                    securityPersonnel.showMenu();
                                     break;
                                 default:
                                     System.out.println("Unknown status");
