@@ -47,8 +47,8 @@ public class SecurityPersonnel {
             System.out.println("-----------------------------------------------");
             System.out.println("1. Create Citation");
             System.out.println("2. Update Citation");
-            System.out.println("3. View all Citations");
-            System.out.println("4. View Citation");
+            System.out.println("3. View Citation");
+            System.out.println("4. View all Citations");
             System.out.println("5. Delete Citation");
             System.out.println("6. Update Payment Status");
             System.out.println("7. Exit");
@@ -64,10 +64,10 @@ public class SecurityPersonnel {
                     updateCitation();
                     break;
                 case 3:
-                    viewAllCitations();
+                	viewCitation(); 
                     break;
                 case 4:
-                    viewCitation();
+                	viewAllCitations();
                     break;
                 case 5:
                 	deleteCitation();
@@ -312,7 +312,7 @@ public class SecurityPersonnel {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             try {
-                conn.rollback(); // Rollback the transaction in case of an exception
+                conn.rollback();
             } catch (SQLException rollbackException) {
                 rollbackException.printStackTrace();
             }
