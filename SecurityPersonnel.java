@@ -50,7 +50,8 @@ public class SecurityPersonnel {
             System.out.println("3. View all Citations");
             System.out.println("4. View Citation");
             System.out.println("5. Delete Citation");
-            System.out.println("6. Exit");
+            System.out.println("6. Update Payment Status");
+            System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
             
            choice = scanner.nextInt();
@@ -72,6 +73,9 @@ public class SecurityPersonnel {
                 	deleteCitation();
                     break;
                 case 6:
+                	updatePaymentStatus();
+                	break;
+                case 7:
                     System.out.println("Exiting. Goodbye!");       
                     LoginApplication.main(null);
                 default:
