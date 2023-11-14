@@ -53,7 +53,7 @@ public class LoginApplication {
     }
 
     
-    private static void login(Scanner scanner, Connection conn) throws SQLException {
+    private static void login(Scanner scanner, Connection conn) {
     	
     	scanner.nextLine();
     	System.out.println("Enter user ID:");
@@ -101,12 +101,16 @@ public class LoginApplication {
                
             }
         } catch (SQLException e) {
-        	conn.rollback();
+        	try {
+				conn.rollback();
+			} catch (SQLException rollbackException) {
+				rollbackException.printStackTrace();
+			}
 			e.printStackTrace();
-		}
+        }
     	
     }
-    private static void createUserAccount(Scanner scanner, Connection conn) throws SQLException {
+    private static void createUserAccount(Scanner scanner, Connection conn) {
     	
     	scanner.nextLine();
         System.out.println("Enter new user ID:");
@@ -125,7 +129,6 @@ public class LoginApplication {
         System.out.println("Enter your choice: ");
         String userType = scanner.nextLine().toUpperCase();
 
-        conn.setAutoCommit(false); // Start transaction
         String insertUserSql = "INSERT INTO User (userID, name, password, status) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement insertUserStmt = conn.prepareStatement(insertUserSql)) {
@@ -150,10 +153,12 @@ public class LoginApplication {
                 System.out.println("Failed to create account.");
             }
         } catch (SQLException e) {
-            conn.rollback(); // Rollback on exception
-            throw e;
-        } finally {
-            conn.setAutoCommit(true); // Reset auto commit behavior
+        	try {
+        		conn.rollback(); // Rollback on exception
+        	} catch (SQLException rollbackException) {
+			rollbackException.printStackTrace();
+        	}
+        	e.printStackTrace();
         }
     }
 
