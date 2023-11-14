@@ -30,7 +30,7 @@ public class SecurityPersonnel {
             String password = prop.getProperty("db.password");
 
             conn = DriverManager.getConnection(url, user, password);
-
+            conn.setAutoCommit(false);
             System.out.println("Connected to the database successfully.");
 
         } catch (Exception e) {
@@ -117,11 +117,18 @@ public class SecurityPersonnel {
 
             if (affectedRows > 0) {
                 System.out.println("New Citation Has Been Created Successfully.");
+                conn.commit();
             } else {
                 System.out.println("Citation Creation Unsuccessful.");
+                conn.rollback();
             }
-        } catch (SQLException e) {
+        } catch (SQLException e) {  	
             System.out.println(e.getMessage());
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
         }
     }
     
@@ -184,11 +191,19 @@ public class SecurityPersonnel {
 
             if (affectedRows > 0) {
                 System.out.println("Citation updated successfully.");
+                conn.commit();
             } else {
+     
                 System.out.println("No citation found with the given ID. Update unsuccessful.");
+                conn.rollback();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
         }
     }
     
@@ -252,11 +267,18 @@ public class SecurityPersonnel {
 
             if (affectedRows > 0) {
                 System.out.println("Citation has been deleted.");
+                conn.commit();
             } else {
                 System.out.println("Could not delete citation. Please check if the number is correct.");
+                conn.rollback();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
         }
     }
     
@@ -278,11 +300,18 @@ public class SecurityPersonnel {
 
             if (affectedRows > 0) {
                 System.out.println("Payment status updated successfully.");
+                conn.commit();
             } else {
                 System.out.println("No citation found with the given number. Update unsuccessful.");
+                conn.rollback();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            try {
+                conn.rollback(); // Rollback the transaction in case of an exception
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
         }
     }
 
