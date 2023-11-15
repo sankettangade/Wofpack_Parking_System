@@ -47,8 +47,8 @@ public class SecurityPersonnel {
             System.out.println("-----------------------------------------------");
             System.out.println("1. Create Citation");
             System.out.println("2. Update Citation");
-            System.out.println("3. View all Citations");
-            System.out.println("4. View Citation");
+            System.out.println("3. View Citation");
+            System.out.println("4. View all Citations");
             System.out.println("5. Delete Citation");
             System.out.println("6. Update Payment Status");
             System.out.println("7. Exit");
@@ -64,10 +64,10 @@ public class SecurityPersonnel {
                     updateCitation();
                     break;
                 case 3:
-                    viewAllCitations();
+                	viewCitation(); 
                     break;
                 case 4:
-                    viewCitation();
+                	viewAllCitations();
                     break;
                 case 5:
                 	deleteCitation();
@@ -77,7 +77,7 @@ public class SecurityPersonnel {
                 	break;
                 case 7:
                     System.out.println("Exiting. Goodbye!");       
-                    LoginApplication.main(null);
+					LoginApplication.main(null);
                 default:
                     System.out.println("Invalid choice. Please try selecting from the Menu again");
             }
@@ -85,7 +85,7 @@ public class SecurityPersonnel {
     }
 
     
-    public void createCitation() {
+    private void createCitation() {
         scanner.nextLine();
         System.out.print("Enter Citation ID: ");
         String id = scanner.nextLine();
@@ -136,7 +136,7 @@ public class SecurityPersonnel {
         }
     }
     
-    public void updateCitation() {
+    private void updateCitation() {
 
     	scanner.nextLine();
         System.out.print("Enter Citation ID to update: ");
@@ -211,7 +211,7 @@ public class SecurityPersonnel {
         }
     }
     
-    public void viewAllCitations() {
+    private void viewAllCitations() {
         String sql = "SELECT * FROM Citations";
         
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -231,7 +231,7 @@ public class SecurityPersonnel {
         }
     }
     
-    public void viewCitation() {
+    private void viewCitation() {
     	scanner.nextLine();
         System.out.print("Enter Citation Number: ");
         String citationNumber = scanner.nextLine();
@@ -258,7 +258,7 @@ public class SecurityPersonnel {
         }
     }
     
-    public void deleteCitation() {
+    private void deleteCitation() {
         scanner.nextLine();
         System.out.print("Enter Citation Number you want to delete: ");
         String citationNumber = scanner.nextLine();
@@ -286,7 +286,7 @@ public class SecurityPersonnel {
         }
     }
     
-    public void updatePaymentStatus() {
+    private void updatePaymentStatus() {
         scanner.nextLine();
         System.out.print("Enter Citation Number to update payment status: ");
         String citationNumber = scanner.nextLine();
@@ -312,7 +312,7 @@ public class SecurityPersonnel {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             try {
-                conn.rollback(); // Rollback the transaction in case of an exception
+                conn.rollback();
             } catch (SQLException rollbackException) {
                 rollbackException.printStackTrace();
             }
