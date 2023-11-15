@@ -42,15 +42,13 @@ public class Driver {
     public void show_welcome_page() {
         int choice = 0;
         do {
-            System.out.println("\nWelcome, Admin!");
+            System.out.println("\nWelcome, User!");
             System.out.println("-----------------------------------------------");
             System.out.println("1. Add/Update/Delete/View Driver");
             System.out.println("2. Add/Update/Delete/View Vehicle");
-            System.out.println("3. View Parking Lot");
-            System.out.println("4. View Zone");
-            System.out.println("5. View Space");
-            System.out.println("6. View Permit");
-            System.out.println("7. Exit");
+            System.out.println("3. View Permit Info");
+            System.out.println("4. View Citations");
+            System.out.println("5. Exit");
             System.out.print("Enter your choice: ");
             
             choice = scanner.nextInt();
@@ -60,21 +58,15 @@ public class Driver {
                     driverMenu();
                     break;
                 case 2:
-                    vehicleMenu();
+                    vehicleMenu(userID);
                     break;
                 case 3:
-                    viewParkingLot();
+                    viewPermitInfo(userID);
                     break;
                 case 4:
-                    viewZone();
+                    viewCitations(userID);
                     break;
                 case 5:
-                    viewSpace();
-                    break;
-                case 6:
-                    viewPermit();
-                    break;
-                case 7:
                     System.out.println("Exiting. Goodbye!");
                     break;
                 default:
@@ -119,7 +111,7 @@ public class Driver {
     }
 
 
-    private void vehicleMenu() {
+    private void vehicleMenu(String userID) {
         int choice = 0;
         do {
         
@@ -133,7 +125,7 @@ public class Driver {
 
             switch (choice) {
                 case 1:
-                    addVehicle();
+                    addVehicle(userID);
                     break;
                 case 2:
                     updateVehicle();
@@ -142,7 +134,7 @@ public class Driver {
                     deleteVehicle();
                     break;
                 case 4:
-                    viewVehicle();
+                    viewVehicle(userID);
                     break;
                 case 5:
                     System.out.println("Exiting. Goodbye!");
@@ -317,7 +309,7 @@ public class Driver {
     }
 
 
-    public void addVehicle() {
+    public void addVehicle(String userID) {
         scanner.nextLine();
         System.out.print("Enter Car License Number: ");
         String carLicenseNo = scanner.nextLine();
@@ -348,6 +340,32 @@ public class Driver {
                     conn.commit(); // Commit the transaction
                 } else {
                     System.out.println("A vehicle could not be added.");
+                    conn.rollback(); // Rollback in case of error
+                }
+            }
+        } catch (SQLException e) {
+            try {
+                conn.rollback(); // Rollback in case of any error
+            } catch (SQLException se) {
+                System.out.println(se.getMessage());
+            }
+            System.out.println(e.getMessage());
+        }
+
+        String sql_1 = "INSERT INTO registered (userID, carLicenseNo) VALUES (?, ?)";
+
+        try {
+            conn.setAutoCommit(false); // Start transaction
+            try (PreparedStatement pstmt = conn.prepareStatement(sql_1)) {
+                pstmt.setString(1, userID);
+                pstmt.setString(2, carLicenseNo);
+                int affectedRows = pstmt.executeUpdate();
+
+                if (affectedRows > 0) {
+                    System.out.println("A new vehicle has been registered.");
+                    conn.commit(); // Commit the transaction
+                } else {
+                    System.out.println("A vehicle could not be registered.");
                     conn.rollback(); // Rollback in case of error
                 }
             }
@@ -455,5 +473,136 @@ public class Driver {
             }
         }
     }
+
+
+    // Method to view user's existing vehicle
+    public void viewVehicle(String userID) {
+        String sql = "SELECT * FROM Vehicle as v JOIN registered as r ON v.carLicenseNo = r.carLicenseNo WHERE r.userID = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, userID);
+            ResultSet rs = pstmt.executeQuery();
+        
+            // Check if at least one result has been returned
+            if (!rs.isBeforeFirst()) {
+                System.out.println("No vehicles found.");
+                return;
+            }
+    
+            while (rs.next()) {
+                System.out.println("Car License Number: " + rs.getString("carLicenseNo") +
+                                ", Manufacturer: " + rs.getString("manufacturer") +
+                                ", Model: " + rs.getString("model") +
+                                ", Color: " + rs.getString("color") +
+                                ", Year: " + rs.getInt("year"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void viewPermitInfo(String userID) {
+        String sql = "SELECT * FROM Permit WHERE userID = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, userID);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("User ID: " + rs.getString("userID") +
+                        "\nPermit ID: " + rs.getString("permitID") +
+                        "\nCar License No: " + rs.getString("carLicenseNo") +
+                        "\nParking Lot ID: " + rs.getString("parkingLotID") +
+                        "\nZone ID: " + rs.getString("zoneID") +
+                        "\spaceNumber: " + rs.getString("spaceNumber") +
+                        "\nspaceType: " + rs.getString("spaceType") +
+                        "\nStart Date: " + rs.getString("startDate") +
+                        "\nExp Date : " + rs.getString("expDate") +
+                        "\nExp TIme: " + rs.getString("expTime") +
+                        "\nPermit Type: " + rs.getString("permitType") 
+                        );
+            } else {
+                System.out.println("User with user ID " + id + " not found.");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+
+        public void viewVehicle(String userID) {
+        String sql = "SELECT * FROM Vehicle as v JOIN registered as r ON v.carLicenseNo = r.carLicenseNo WHERE r.userID = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, userID);
+            ResultSet rs = pstmt.executeQuery();
+        
+            // Check if at least one result has been returned
+            if (!rs.isBeforeFirst()) {
+                System.out.println("No vehicles found.");
+                return;
+            }
+    
+            while (rs.next()) {
+                System.out.println("Car License Number: " + rs.getString("carLicenseNo") +
+                                ", Manufacturer: " + rs.getString("manufacturer") +
+                                ", Model: " + rs.getString("model") +
+                                ", Color: " + rs.getString("color") +
+                                ", Year: " + rs.getInt("year"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void viewCitations(String userID) {
+        String sql = "SELECT * FROM registered WHERE userID = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, userID);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (!rs.isBeforeFirst()) {
+                System.out.println("No vehicles found for this user " + userID);
+                return;
+            }
+
+            while (rs.next()) {
+                carLicenseNo = rs.getString("carLicenseNo");
+                String sql_1 = "SELECT * FROM Citations WHERE carLicenseNo = ?";
+                try (PreparedStatement pstmt = conn.prepareStatement(sql_1)) {
+                    pstmt.setString(1, carLicenseNo);
+                    ResultSet rs_1 = pstmt.executeQuery();
+
+                    if (!rs_1.isBeforeFirst()) {
+                        System.out.println("No citations this vehicle " + carLicenseNo);
+                        return;
+                    }
+
+                    while (rs_1.next()) {
+                        System.out.println("Citation Number: " + rs_1.getString("citationNumber") +
+                                "\nCar License No: " + rs_1.getString("carLicenseNo") +
+                                "\nParking Lot ID: " + rs_1.getString("parkingLotID") +
+                                "\nCitation Date: " + rs_1.getString("citationDate") +
+                                "\nCitation Time: " + rs_1.getInt("citationTime") +
+                                "\nCitation Date: " + rs_1.getString("citationDate") +
+                                "\nCategory: " + rs_1.getString("category") +
+                                "\nFee: " + rs_1.getString("fee") +
+                                "\nPayment Status: " + rs_1.getString("paymentStatus") +
+                                "\nAppeal: " + rs_1.getString("appeal")
+                                );
+                    }
+                }
+                catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+
+
 
 }
