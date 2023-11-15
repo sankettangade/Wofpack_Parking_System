@@ -107,6 +107,7 @@ public class SecurityPersonnel {
         String paymentStatus = scanner.next();
         String sql = "INSERT INTO Citations (citationNumber, carLicenseNo, parkingLotID, citationDate, citationTime, category, fee, paymentStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
+    
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, id);
             pstmt.setString(2, carLicenseNo);
