@@ -25,7 +25,7 @@ public class LoginApplication {
             
             int choice = 0;
             do {
-                System.out.println("\nWelcome User!");
+                System.out.println("\nWelcome to Wolfpack Parking System!");
                 System.out.println("-----------------------------------------------");
             System.out.println("1. Login");
             System.out.println("2. New Driver Sign-up");
@@ -73,9 +73,11 @@ public class LoginApplication {
                     String status = rs.getString("status");
                     switch (status) {
                         case "S":
+                        	System.out.println("Welcome NC State Student");
                         case "E":
+                        	System.out.println("Welcome NC State Staff");
                         case "V":
-                            System.out.println("Welcome Driver");
+                            System.out.println("Welcome NC State Visitor");
                             break;
                         case "A":
                             System.out.println("Welcome Admin");
@@ -92,11 +94,11 @@ public class LoginApplication {
                             break;
                     }
                 } else {
-                    System.out.println("Wrong password.");
+                    System.out.println("Wrong password!");
                     conn.commit();
                 }
             } else {
-                System.out.println("UserID or password not found. Please try again");
+                System.out.println("UserID or password not found! Please try again");
                 conn.rollback();
                
             }
@@ -121,11 +123,9 @@ public class LoginApplication {
         String newPassword = scanner.nextLine();
 
         System.out.println("Choose the type of user you want to create:");
-        System.out.println("A : Admin");
         System.out.println("S : Student");
         System.out.println("E : Employee");
         System.out.println("V : Visitor");
-        System.out.println("SP : Security Personnel");
         System.out.println("Enter your choice: ");
         String userType = scanner.nextLine().toUpperCase();
 
@@ -164,10 +164,6 @@ public class LoginApplication {
 
     private static boolean addAdditionalUserInfo(Scanner scanner, Connection conn, String userID, String userType) throws SQLException {
         switch (userType) {
-            case "A":
-                return insertIntoAdmin(conn, userID);
-            case "SP":
-                return insertIntoSecurityPersonnel(conn, userID);
             case "S":
             case "E":
             case "V":
@@ -176,22 +172,6 @@ public class LoginApplication {
                 return insertIntoDriver(conn, userID, disabilityStatus);
             default:
                 return true;
-        }
-    }
-
-    private static boolean insertIntoAdmin(Connection conn, String userID) throws SQLException {
-        String sql = "INSERT INTO Admin (userID) VALUES (?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, userID);
-            return stmt.executeUpdate() > 0;
-        }
-    }
-
-    private static boolean insertIntoSecurityPersonnel(Connection conn, String userID) throws SQLException {
-        String sql = "INSERT INTO SecurityPersonnel (userID) VALUES (?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, userID);
-            return stmt.executeUpdate() > 0;
         }
     }
 
