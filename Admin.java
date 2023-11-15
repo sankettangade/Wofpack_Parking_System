@@ -97,7 +97,7 @@ public class Admin {
         System.out.println("4. View all parking lots");
         
         System.out.println("5. Exit");
-        // Call respective methods based on user choice
+        
         choice = scanner.nextInt();
 
             switch (choice) {
@@ -131,7 +131,7 @@ public class Admin {
         System.out.println("3. Delete Zone infot");
         System.out.println("4. View all zones");
         System.out.println("5. Exit");
-        // Call respective methods based on user choice
+        
         choice = scanner.nextInt();
 
             switch (choice) {
@@ -166,7 +166,7 @@ public class Admin {
         System.out.println("3. Delete Space");
         System.out.println("4. View all spaces");
         System.out.println("5. Exit");
-        // Call respective methods based on user choice
+        
         choice = scanner.nextInt();
 
             switch (choice) {
@@ -200,7 +200,7 @@ public class Admin {
         System.out.println("3. Delete Permitt");
         System.out.println("4. View all Permit");
         System.out.println("5. Exit");
-        // Call respective methods based on user choice
+        
         choice = scanner.nextInt();
 
             switch (choice) {
@@ -234,7 +234,7 @@ public class Admin {
         System.out.println("3. Delete Vehicle");
         System.out.println("4. View all Vehicle");
         System.out.println("5. Exit");
-        // Call respective methods based on user choice
+        
         choice = scanner.nextInt();
 
             switch (choice) {
@@ -260,7 +260,6 @@ public class Admin {
         
     }
 
-    // Placeholder methods for CRUD operations will go here
 
     // Method to add a new parking lot
     public void addParkingLot() {
@@ -406,9 +405,7 @@ public class Admin {
         System.out.print("Enter Zone ID to update: ");
         String zoneID = scanner.nextLine();
 
-        // Placeholder for update logic, since the zone only consists of IDs,
-        // and those are primary keys, we would typically not update this table.
-        // If there were more fields, we could update them here.
+        
 
         System.out.println("The Zone table only contains ID fields which are not typically updated.");
     }
@@ -662,139 +659,20 @@ public class Admin {
 		}
     }
 
-    // Method to add a new permit
-    // public void addPermit() {
-    //     scanner.nextLine();
-    //     // Prompt for details required to check space availability
-    //     System.out.print("Enter Parking Lot ID: ");
-    //     String parkingLotID = scanner.nextLine();
-    //     System.out.print("Enter Zone ID: ");
-    //     String zoneID = scanner.nextLine();
-    //     System.out.print("Enter Space Number: ");
-    //     int spaceNumber = scanner.nextInt();
-    //     scanner.nextLine(); // Consume the newline
-    
-    //     // Check if the space is available
-    //     String checkSpaceSql = "SELECT availability FROM Space WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
-    //     try (PreparedStatement checkSpaceStmt = conn.prepareStatement(checkSpaceSql)) {
-    //         checkSpaceStmt.setString(1, parkingLotID);
-    //         checkSpaceStmt.setString(2, zoneID);
-    //         checkSpaceStmt.setInt(3, spaceNumber);
-    //         ResultSet rs = checkSpaceStmt.executeQuery();
-    //         if (rs.next()) {
-    //             String availability = rs.getString("availability");
-    //             if ("N".equals(availability)) {
-    //                 System.out.println("The space is currently occupied. Cannot assign a permit.");
-    //                 return;
-    //             }
-    //         } else {
-    //             System.out.println("The specified space does not exist.");
-    //             return;
-    //         }
-    //     } catch (SQLException e) {
-    //         System.out.println("Error checking space availability: " + e.getMessage());
-    //         return;
-    //     }
-    
-    //     // Prompt for the rest of the permit details
-    //     System.out.print("Enter Permit ID: ");
-    //     String permitID = scanner.nextLine();
-    //     System.out.print("Enter Car License Number: ");
-    //     String carLicenseNo = scanner.nextLine();
-    //     System.out.print("Enter Space Type: ");
-    //     String spaceType = scanner.nextLine();
-    //     System.out.print("Enter Start Date (YYYY-MM-DD): ");
-    //     String startDate = scanner.nextLine();
-    //     System.out.print("Enter Expiry Date (YYYY-MM-DD), leave blank if none: ");
-    //     String expDate = scanner.nextLine();
-    //     System.out.print("Enter Expiry Time (HH:MM:SS), leave blank if none: ");
-    //     String expTime = scanner.nextLine();
-    //     System.out.print("Enter User ID: ");
-    //     String userID = scanner.nextLine();
-    //     System.out.print("Enter Permit Type: ");
-    //     String permitType = scanner.nextLine();
-    
-    //     // SQL to insert a new permit
-    //     String addPermitSql = "INSERT INTO Permit (permitID, carLicenseNo, parkingLotID, zoneID, spaceNumber, spaceType, startDate, expDate, expTime, userID, permitType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    //     // SQL to update space availability
-    //     String updateSpaceSql = "UPDATE Space SET availability = 'N' WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
-    
-    //     try {
-    //         conn.setAutoCommit(false); // Start transaction
-    
-    //         // Insert the permit
-    //         try (PreparedStatement addPermitStmt = conn.prepareStatement(addPermitSql)) {
-    //             addPermitStmt.setString(1, permitID);
-    //             addPermitStmt.setString(2, carLicenseNo);
-    //             addPermitStmt.setString(3, parkingLotID);
-    //             addPermitStmt.setString(4, zoneID);
-    //             addPermitStmt.setInt(5, spaceNumber);
-    //             addPermitStmt.setString(6, spaceType);
-    //             addPermitStmt.setDate(7, java.sql.Date.valueOf(startDate));
-    //             if (!expDate.isEmpty()) {
-    //                 addPermitStmt.setDate(8, java.sql.Date.valueOf(expDate));
-    //             } else {
-    //                 addPermitStmt.setNull(8, java.sql.Types.DATE);
-    //             }
-    //             if (!expTime.isEmpty()) {
-    //                 addPermitStmt.setTime(9, java.sql.Time.valueOf(expTime));
-    //             } else {
-    //                 addPermitStmt.setNull(9, java.sql.Types.TIME);
-    //             }
-    //             addPermitStmt.setString(10, userID);
-    //             addPermitStmt.setString(11, permitType);
-    //             int affectedRows = addPermitStmt.executeUpdate();
-    
-    //             if (affectedRows == 0) {
-    //                 throw new SQLException("Inserting permit failed, no rows affected.");
-    //             }
-    //         }
-    
-    //         // Update the space availability
-    //         try (PreparedStatement updateSpaceStmt = conn.prepareStatement(updateSpaceSql)) {
-    //             updateSpaceStmt.setString(1, parkingLotID);
-    //             updateSpaceStmt.setString(2, zoneID);
-    //             updateSpaceStmt.setInt(3, spaceNumber);
-    //             int affectedRows = updateSpaceStmt.executeUpdate();
-    
-    //             if (affectedRows == 0) {
-    //                 throw new SQLException("Updating space availability failed, no rows affected.");
-    //             }
-    //         }
-    
-    //         // Commit the transaction if all operations were successful
-    //         conn.commit();
-    //         System.out.println("Permit added and space marked as occupied.");
-    
-    //     } catch (SQLException e) {
-    //         System.out.println("Transaction failed: " + e.getMessage());
-    //         try {
-    //             conn.rollback(); // Rollback in case of any error
-    //         } catch (SQLException se) {
-    //             System.out.println("Error during rollback: " + se.getMessage());
-    //         }
-    //     } finally {
-    //         try {
-    //             conn.setAutoCommit(true); // Reset auto-commit to true
-    //         } catch (SQLException se) {
-    //             System.out.println("Error resetting auto-commit: " + se.getMessage());
-    //         }
-    //     }
-    // }
     
     // Method to add a new permit
     public void addPermit() {
         scanner.nextLine();
-        // Prompt for details required to check space availability
+        
         System.out.print("Enter Parking Lot ID: ");
         String parkingLotID = scanner.nextLine();
         System.out.print("Enter Zone ID: ");
         String zoneID = scanner.nextLine();
         System.out.print("Enter Space Number: ");
         int spaceNumber = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline
+        scanner.nextLine(); 
     
-        // Check if the space is available
+        
         String checkSpaceSql = "SELECT availability FROM Space WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
         try (PreparedStatement checkSpaceStmt = conn.prepareStatement(checkSpaceSql)) {
             checkSpaceStmt.setString(1, parkingLotID);
@@ -816,11 +694,10 @@ public class Admin {
             return;
         }
     
-        // Prompt for the user ID
+        
         System.out.print("Enter User ID: ");
         String userID = scanner.nextLine();
     
-        // Check the disability status of the user
         String checkDisabilityStatusSql = "SELECT disabilityStatus FROM Driver WHERE userID = ?";
         String disabilityStatus = null;
         try (PreparedStatement checkDisabilityStatusStmt = conn.prepareStatement(checkDisabilityStatusSql)) {
@@ -839,7 +716,6 @@ public class Admin {
             return;
         }
     
-        // Check if the space is suitable for the user based on disability status
         String checkSpaceSuitabilitySql = "SELECT spaceType FROM Space WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
         try (PreparedStatement checkSpaceSuitabilityStmt = conn.prepareStatement(checkSpaceSuitabilitySql)) {
             checkSpaceSuitabilityStmt.setString(1, parkingLotID);
@@ -862,7 +738,6 @@ public class Admin {
             return;
         }
     
-        // Continue with permit registration
         System.out.print("Enter Permit ID: ");
         String permitID = scanner.nextLine();
         System.out.print("Enter Car License Number: ");
@@ -876,9 +751,8 @@ public class Admin {
         System.out.print("Enter Permit Type: ");
         String permitType = scanner.nextLine();
     
-        // SQL to insert a new permit
         String addPermitSql = "INSERT INTO Permit (permitID, carLicenseNo, parkingLotID, zoneID, spaceNumber, startDate, expDate, expTime, userID, permitType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        // SQL to update space availability
+      
         String updateSpaceSql = "UPDATE Space SET availability = 'N' WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
     
         try {
@@ -911,7 +785,6 @@ public class Admin {
                 }
             }
     
-            // Update the space availability
             try (PreparedStatement updateSpaceStmt = conn.prepareStatement(updateSpaceSql)) {
                 updateSpaceStmt.setString(1, parkingLotID);
                 updateSpaceStmt.setString(2, zoneID);
@@ -949,7 +822,6 @@ public class Admin {
         scanner.nextLine();
         System.out.print("Enter Permit ID to update: ");
         String permitID = scanner.nextLine();
-        // Assume that we're updating expiry date and time for the permit.
         System.out.print("Enter new Expiry Date (YYYY-MM-DD), leave blank if none: ");
         String expDate = scanner.nextLine();
         System.out.print("Enter new Expiry Time (HH:MM:SS), leave blank if none: ");
@@ -1003,11 +875,10 @@ public class Admin {
         System.out.print("Enter Permit ID to delete: ");
         String permitID = scanner.nextLine();
     
-        // SQL to find the associated parking lot, zone, and space number
         String findSpaceSql = "SELECT parkingLotID, zoneID, spaceNumber FROM Permit WHERE permitID = ?";
-        // SQL to delete the permit
+
         String deletePermitSql = "DELETE FROM Permit WHERE permitID = ?";
-        // SQL to update space availability
+        
         String updateSpaceSql = "UPDATE Space SET availability = 'Y' WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
     
         try {
@@ -1017,7 +888,6 @@ public class Admin {
             String zoneID = null;
             int spaceNumber = -1;
     
-            // Find the associated space details
             try (PreparedStatement findSpaceStmt = conn.prepareStatement(findSpaceSql)) {
                 findSpaceStmt.setString(1, permitID);
                 try (ResultSet rs = findSpaceStmt.executeQuery()) {
@@ -1033,7 +903,6 @@ public class Admin {
                 }
             }
     
-            // Delete the permit
             try (PreparedStatement deletePermitStmt = conn.prepareStatement(deletePermitSql)) {
                 deletePermitStmt.setString(1, permitID);
                 int affectedRows = deletePermitStmt.executeUpdate();
@@ -1043,7 +912,6 @@ public class Admin {
                 }
             }
     
-            // Update the space availability if permit is successfully deleted
             if (parkingLotID != null && zoneID != null && spaceNumber != -1) {
                 try (PreparedStatement updateSpaceStmt = conn.prepareStatement(updateSpaceSql)) {
                     updateSpaceStmt.setString(1, parkingLotID);
@@ -1081,7 +949,6 @@ public class Admin {
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             
-            // Check if at least one result has been returned
             if (!rs.isBeforeFirst()) {
                 System.out.println("No permits found.");
                 return;
@@ -1170,7 +1037,7 @@ public class Admin {
         String color = scanner.nextLine();
         System.out.print("Enter new Year: ");
         int year = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline
+        scanner.nextLine(); 
 
         String sql = "UPDATE Vehicle SET manufacturer = ?, model = ?, color = ?, year = ? WHERE carLicenseNo = ?";
 
@@ -1253,7 +1120,6 @@ public class Admin {
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             
-            // Check if at least one result has been returned
             if (!rs.isBeforeFirst()) {
                 System.out.println("No vehicles found.");
                 return;
