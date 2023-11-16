@@ -42,7 +42,7 @@ public class Driver {
     public void show_welcome_page() {
         int choice = 0;
         do {
-            System.out.println("\nWelcome, User!");
+            System.out.println("\nWelcome, Driver!");
             System.out.println("-----------------------------------------------");
             System.out.println("1. Add/Update/Delete/View Driver");
             System.out.println("2. Add/Update/Delete/View Vehicle");
@@ -72,7 +72,7 @@ public class Driver {
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
-        } while (choice != 6);
+        } while (choice != 5);
     }
 
 
