@@ -45,7 +45,7 @@ public class LoginApplication {
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }
-            } while (choice != 5);
+            } while (choice != 3);
 
         } catch (Exception e) {
             e.printStackTrace();
