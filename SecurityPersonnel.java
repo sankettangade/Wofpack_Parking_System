@@ -143,7 +143,7 @@ public class SecurityPersonnel {
         }
     }
 
-    // Method to check if the car has a valid permit
+    
     private boolean checkValidPermit(String carLicenseNo) {
         String permitCheckQuery = "SELECT * FROM Permit WHERE carLicenseNo = ? AND expDate < CURRENT_DATE";
         
@@ -151,10 +151,10 @@ public class SecurityPersonnel {
             permitCheckStmt.setString(1, carLicenseNo);
             ResultSet resultSet = permitCheckStmt.executeQuery();
             
-            return resultSet.next(); // Returns true if a valid permit is found
+            return resultSet.next();
         } catch (SQLException e) {
             System.out.println("Error checking permit: " + e.getMessage());
-            return false; // Return false in case of an exception or no valid permit
+            return false; 
         }
     }
 
