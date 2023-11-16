@@ -9,6 +9,8 @@ import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SecurityPersonnel {
 	private Connection conn;
@@ -340,6 +342,150 @@ public class SecurityPersonnel {
             } catch (SQLException rollbackException) {
                 rollbackException.printStackTrace();
             }
+        }
+    }
+
+    public void getLotCitationCount(String timeRange) {
+        String sql;
+
+        if (timeRange == null || timeRange.isEmpty()) {
+            // Default to monthly if time range is not selected
+            sql = "SELECT parkingLotID, zone, COUNT(*) as citationCount FROM Citations WHERE MONTH(citationDate) = MONTH(CURRENT_DATE()) GROUP BY parkingLotID, zone";
+        } else {
+            // Customize the SQL query based on the selected time range (you may need to adjust this based on your database schema)
+            // Example: Monthly, Weekly, Daily
+            sql = "SELECT parkingLotID, zone, COUNT(*) as citationCount FROM Citations WHERE DATE_SUB(CURDATE(), INTERVAL 1 " + timeRange.toUpperCase() + ") <= citationDate GROUP BY parkingLotID, zone";
+        }
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+
+            List<String> citationCounts = new ArrayList<>();
+
+            while (rs.next()) {
+                String parkingLotID = rs.getString("parkingLotID");
+                String zone = rs.getString("zone");
+                int count = rs.getInt("citationCount");
+                
+                System.out.println("(" + parkingLotID + ", " + zone + "): " + count + " citations");
+            }
+
+            if (citationCounts.isEmpty()) {
+                System.out.println("No citation counts found for the specified time range.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getZones() {
+        String sql = "SELECT parkingLotID, zone FROM ParkingLots";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String parkingLotID = rs.getString("parkingLotID");
+                String zone = rs.getString("zone");
+
+                System.out.println("(" + parkingLotID + ", " + zone + ")");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getViolationCarCount() {
+        String sql = "SELECT DISTINCT carLicenseNo FROM Citations WHERE paymentStatus = 'Unpaid'";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String carLicenseNo = rs.getString("carLicenseNo");
+                System.out.println(carLicenseNo);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getPermittedEmployees(String parkingLotID) {
+        if (parkingLotID == null || parkingLotID.isEmpty()) {
+            throw new IllegalArgumentException("Parking Lot ID cannot be null or empty.");
+        }
+
+        String sql = "SELECT DISTINCT driverID FROM Permits WHERE parkingLotID = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, parkingLotID);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String driverID = rs.getString("driverID");
+                System.out.println(driverID);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getPermitInformation(String userID) {
+        if (userID == null || userID.isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty.");
+        }
+
+        String sql = "SELECT * FROM Permits WHERE driverID = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, userID);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                String permitID = rs.getString("permitID");
+                String parkingLotID = rs.getString("parkingLotID");
+                // Add more fields as needed
+
+                System.out.println("Permit ID: " + permitID);
+                System.out.println("Parking Lot ID: " + parkingLotID);
+                // Print additional permit information
+            } else {
+                System.out.println("No permit information found for user ID: " + userID);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getAvailableSpaces(String parkingLotID, String spaceType) {
+        if (parkingLotID == null || parkingLotID.isEmpty() || spaceType == null || spaceType.isEmpty()) {
+            throw new IllegalArgumentException("Parking Lot ID and Space Type cannot be null or empty.");
+        }
+
+        String sql = "SELECT spaceNumber FROM ParkingSpaces WHERE parkingLotID = ? AND spaceType = ? AND occupied = 0";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, parkingLotID);
+            pstmt.setString(2, spaceType);
+            ResultSet rs = pstmt.executeQuery();
+
+            List<String> availableSpaces = new ArrayList<>();
+
+            while (rs.next()) {
+                String spaceNumber = rs.getString("spaceNumber");
+                availableSpaces.add(spaceNumber);
+            }
+
+            if (!availableSpaces.isEmpty()) {
+                System.out.println("Available Spaces for Parking:");
+                for (String space : availableSpaces) {
+                    System.out.println(space);
+                }
+            } else {
+                System.out.println("No available spaces found for the specified criteria.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
