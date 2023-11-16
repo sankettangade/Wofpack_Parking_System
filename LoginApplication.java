@@ -74,10 +74,18 @@ public class LoginApplication {
                     switch (status) {
                         case "S":
                         	System.out.println("Welcome NC State Student");
+                            Driver st_driver = new Driver(userID);
+                            st_driver.show_welcome_page();
+                            break;
                         case "E":
                         	System.out.println("Welcome NC State Staff");
+                            Driver e_driver = new Driver(userID);
+                            e_driver.show_welcome_page();
+                            break;
                         case "V":
                             System.out.println("Welcome NC State Visitor");
+                            Driver v_driver = new Driver(userID);
+                            v_driver.show_welcome_page();
                             break;
                         case "A":
                             System.out.println("Welcome Admin");
