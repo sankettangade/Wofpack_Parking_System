@@ -46,8 +46,8 @@ public class Driver {
             System.out.println("-----------------------------------------------");
             System.out.println("1. Add/Update/Delete/View Driver");
             System.out.println("2. Add/Update/Delete/View Vehicle");
-            System.out.println("3. View Permit Info");
-            System.out.println("4. View Citations");
+            System.out.println("3. Pay/View/Appeal Citations");
+            System.out.println("4. View Permit Info");
             System.out.println("5. Exit");
             System.out.print("Enter your choice: ");
             
@@ -55,16 +55,16 @@ public class Driver {
 
             switch (choice) {
                 case 1:
-                    driverMenu();
+                    driverMenu(userID);
                     break;
                 case 2:
                     vehicleMenu(userID);
                     break;
                 case 3:
-                    viewPermitInfo(userID);
+                    citationsMenu(userID);
                     break;
                 case 4:
-                    viewCitations(userID);
+                    viewPermitInfo(userID);
                     break;
                 case 5:
                     System.out.println("Exiting. Goodbye!");
@@ -76,7 +76,7 @@ public class Driver {
     }
 
 
-    private void driverMenu() {
+    private void driverMenu(String userID) {
         int choice = 0;
         do {
         
@@ -90,16 +90,16 @@ public class Driver {
 
             switch (choice) {
                 case 1:
-                    enterDriverInfo();
+                    addDriverInfo();
                     break;
                 case 2:
-                    updateDriverInfo();
+                    updateDriverInfo(userID);
                     break;
                 case 3:
-                    deleteDriverInfo();
+                    deleteDriverInfo(userID);
                     break;
                 case 4:
-                    viewDriverInfo();
+                    viewDriverInfo(userID);
                     break;
                 case 5:
                     System.out.println("Exiting. Goodbye!");
@@ -147,6 +147,37 @@ public class Driver {
     }
 
 
+    private void citationsMenu(String userID) {
+        int choice = 0;
+        do {
+        
+        System.out.println("1. View Citations");
+        System.out.println("2. Pay Citation fee");
+        System.out.println("3. Appeal against a citation");
+        System.out.println("4. Exit");
+        // Call respective methods based on user choice
+        choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    viewCitations(userID);
+                    break;
+                case 2:
+                    payCitations(userID);
+                    break;
+                case 3:
+                    appealCitations(userID);
+                    break;
+                case 4:
+                    System.out.println("Exiting. Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        } while (choice != 4);
+    }
+
+
     public void addDriverInfo() {
         scanner.nextLine();
         System.out.print("Enter Driver's name: ");
@@ -178,9 +209,9 @@ public class Driver {
             System.out.println(e.getMessage());
         }
 
-        String sql = "INSERT INTO Driver (userID, disabilityStatus) VALUES (?, ?)";
+        String insert_sql = "INSERT INTO Driver (userID, disabilityStatus) VALUES (?, ?)";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(insert_sql)) {
             pstmt.setString(1, userID);
             pstmt.setString(2, disability_status);
             int affectedRows = pstmt.executeUpdate();
@@ -196,22 +227,20 @@ public class Driver {
     }
 
 
-        public void updateDriverInfo() {
+    public void updateDriverInfo(String userID) {
         scanner.nextLine();
-        System.out.print("Enter Driver's ID to update: ");
-        String id = scanner.nextLine();
         System.out.print("Enter new Driver Name: ");
         String name = scanner.nextLine();
         System.out.print("Enter new status: ");
         String status = scanner.nextLine();
         System.out.print("Enter new password: ");
         String password = scanner.nextLine();
-        System.out.print("Enter new disability_status: ");
+        System.out.print("Enter new disability status: ");
         String disability_status = scanner.nextLine();
 
-        String sql = "UPDATE User SET name = ?, status = ?, password = ? WHERE userID = ?";
+        String update_sql = "UPDATE User SET name = ?, status = ?, password = ? WHERE userID = ?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(update_sql)) {
             pstmt.setString(1, name);
             pstmt.setString(2, status);
             pstmt.setString(3, password);
@@ -246,21 +275,17 @@ public class Driver {
     }
 
 
-    public void deleteDriverInfo() {
-        scanner.nextLine();
-        System.out.print("Enter driver's user ID to delete: ");
-        String id = scanner.nextLine();
-
+    public void deleteDriverInfo(String userID) {
         String sql = "DELETE FROM Driver WHERE userID = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, id);
+            pstmt.setString(1, userID);
             int affectedRows = pstmt.executeUpdate();
 
             if (affectedRows > 0) {
-                System.out.println("Driver has been deleted.");
+                System.out.println("Driver "+ userID +" has been deleted.");
             } else {
-                System.out.println("Could not delete driver. Please check if the ID is correct.");
+                System.out.println("Could not delete driver info. Please check if the ID is correct or login correctly.");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -268,23 +293,19 @@ public class Driver {
     }
 
 
-    public void viewDriverInfo() {
-        scanner.nextLine();
-        System.out.print("Enter driver's user ID to view thier information: ");
-        String id = scanner.nextLine();
-
+    public void viewDriverInfo(String userID) {
         String sql_1 = "SELECT * FROM User WHERE userID = ?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql_1)) {
-            pstmt.setString(1, id);
-            ResultSet rs_1 = pstmt.executeQuery();
+        try (PreparedStatement pstmt_1 = conn.prepareStatement(sql_1)) {
+            pstmt_1.setString(1, userID);
+            ResultSet rs_1 = pstmt_1.executeQuery();
 
             if (rs_1.next()) {
                 String sql_2 = "SELECT * FROM Driver WHERE userID = ?";
 
-                try (PreparedStatement pstmt = conn.prepareStatement(sql_2)) {
-                    pstmt.setString(1, id);
-                    ResultSet rs_2 = pstmt.executeQuery();
+                try (PreparedStatement pstmt_2 = conn.prepareStatement(sql_2)) {
+                    pstmt_2.setString(1, userID);
+                    ResultSet rs_2 = pstmt_2.executeQuery();
 
                     if (rs_2.next()) {
                         System.out.println("User ID: " + rs_2.getString("useriD") +
@@ -293,14 +314,14 @@ public class Driver {
                                 ", Disability Status: " + rs_2.getString("disability_status") +
                                 ", Password: " + rs_1.getString("password"));
                     } else {
-                        System.out.println("Driver with user ID " + id + " not found.");
+                        System.out.println("Driver with user ID " + userID + " not found.");
                     }
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
 
             } else {
-                System.out.println("User with user ID " + id + " not found.");
+                System.out.println("User with user ID " + userID + " not found.");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -521,7 +542,7 @@ public class Driver {
                         "\nPermit Type: " + rs.getString("permitType") 
                         );
             } else {
-                System.out.println("User with user ID " + id + " not found.");
+                System.out.println("User with user ID " + userID + " not found.");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -529,37 +550,13 @@ public class Driver {
 
     }
 
-
-        public void viewVehicle(String userID) {
-        String sql = "SELECT * FROM Vehicle as v JOIN registered as r ON v.carLicenseNo = r.carLicenseNo WHERE r.userID = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, userID);
-            ResultSet rs = pstmt.executeQuery();
-        
-            // Check if at least one result has been returned
-            if (!rs.isBeforeFirst()) {
-                System.out.println("No vehicles found.");
-                return;
-            }
-    
-            while (rs.next()) {
-                System.out.println("Car License Number: " + rs.getString("carLicenseNo") +
-                                ", Manufacturer: " + rs.getString("manufacturer") +
-                                ", Model: " + rs.getString("model") +
-                                ", Color: " + rs.getString("color") +
-                                ", Year: " + rs.getInt("year"));
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
     public void viewCitations(String userID) {
-        String sql = "SELECT * FROM registered WHERE userID = ?";
+        String sql_1 = "SELECT * FROM registered WHERE userID = ?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, userID);
-            ResultSet rs = pstmt.executeQuery();
+        try (PreparedStatement pstmt_1 = conn.prepareStatement(sql_1)) {
+            pstmt_1.setString(1, userID);
+            ResultSet rs = pstmt_1.executeQuery();
 
             if (!rs.isBeforeFirst()) {
                 System.out.println("No vehicles found for this user " + userID);
@@ -567,11 +564,11 @@ public class Driver {
             }
 
             while (rs.next()) {
-                carLicenseNo = rs.getString("carLicenseNo");
-                String sql_1 = "SELECT * FROM Citations WHERE carLicenseNo = ?";
-                try (PreparedStatement pstmt = conn.prepareStatement(sql_1)) {
-                    pstmt.setString(1, carLicenseNo);
-                    ResultSet rs_1 = pstmt.executeQuery();
+                String carLicenseNo = rs.getString("carLicenseNo");
+                String sql_2 = "SELECT * FROM Citations WHERE carLicenseNo = ?";
+                try (PreparedStatement pstmt_2 = conn.prepareStatement(sql_2)) {
+                    pstmt_2.setString(1, carLicenseNo);
+                    ResultSet rs_1 = pstmt_2.executeQuery();
 
                     if (!rs_1.isBeforeFirst()) {
                         System.out.println("No citations this vehicle " + carLicenseNo);
@@ -603,6 +600,104 @@ public class Driver {
     }
 
 
+    public void payCitations(String userID) {
+        scanner.nextLine();
+        System.out.print("Enter Vehicle's License Number: ");
+        String carLicenseNo = scanner.nextLine();
+
+        String sql_1 = "SELECT * FROM Citations WHERE carLicenseNo = ?";
+        try (PreparedStatement pstmt_1 = conn.prepareStatement(sql_1)) {
+            pstmt_1.setString(1, carLicenseNo);
+            ResultSet rs_1 = pstmt_1.executeQuery();
+
+            if (!rs_1.isBeforeFirst()) {
+                System.out.println("No citations against this vehicle " + carLicenseNo);
+                return;
+            }
+
+            while (rs_1.next()) {
+                String paymentStatus = rs_1.getString("paymentStatus");
+                if (paymentStatus == "DUE") {
+                    paymentStatus = "PAID";
+                    String sql_2 = "UPDATE Citations SET paymentStatus = ? WHERE carLicenseNo = ?";
+                    conn.setAutoCommit(false); // Start transaction
+                    try (PreparedStatement pstmt_2 = conn.prepareStatement(sql_2)) {
+                        pstmt_2.setString(1, paymentStatus);
+                        pstmt_2.setString(2, carLicenseNo);
+                        int affectedRows = pstmt_2.executeUpdate();
+
+                        if (affectedRows > 0) {
+                            System.out.println("Citation has been paid successfully.");
+                            conn.commit(); // Commit the transaction
+                        } else {
+                            System.out.println("Could not pay for the citation. Please check if the Car License Number is correct.");
+                            conn.rollback(); // Rollback in case of error
+                        }
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                        try {
+                            conn.rollback();
+                        } catch (SQLException rollbackException) {
+                            rollbackException.printStackTrace();
+                        }
+                    }   
+                } else {
+                    System.out.println("Citation has already been paid previously.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 
+    public void appealCitations(String userID) {
+        scanner.nextLine();
+        System.out.print("Enter Vehicle's License Number: ");
+        String carLicenseNo = scanner.nextLine();
+
+        String sql_1 = "SELECT * FROM Citations WHERE carLicenseNo = ?";
+        try (PreparedStatement pstmt_1 = conn.prepareStatement(sql_1)) {
+            pstmt_1.setString(1, carLicenseNo);
+            ResultSet rs_1 = pstmt_1.executeQuery();
+
+            if (!rs_1.isBeforeFirst()) {
+                System.out.println("No citations against this vehicle " + carLicenseNo);
+                return;
+            }
+
+            while (rs_1.next()) {
+                String appeal = rs_1.getString("appeal");
+                if (appeal == "no") {
+                    appeal = "yes";
+                    String sql_2 = "UPDATE Citations SET appeal = ? WHERE carLicenseNo = ?";
+                    conn.setAutoCommit(false); // Start transaction
+                    try (PreparedStatement pstmt_2 = conn.prepareStatement(sql_2)) {
+                        pstmt_2.setString(1, appeal);
+                        pstmt_2.setString(2, carLicenseNo);
+                        int affectedRows = pstmt_2.executeUpdate();
+
+                        if (affectedRows > 0) {
+                            System.out.println("Appeal against the citation has been made.");
+                            conn.commit(); // Commit the transaction
+                        } else {
+                            System.out.println("Could not appeal against the citation. Please check if the Car License Number is correct.");
+                            conn.rollback(); // Rollback in case of error
+                        }
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                        try {
+                            conn.rollback();
+                        } catch (SQLException rollbackException) {
+                            rollbackException.printStackTrace();
+                        }
+                    }   
+                } else {
+                    System.out.println("Appeal against this citation already exists.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
