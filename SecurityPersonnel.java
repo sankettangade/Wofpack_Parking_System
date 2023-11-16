@@ -94,7 +94,7 @@ public class SecurityPersonnel {
 
         // Check if the car has a valid permit
         if (!checkValidPermit(carLicenseNo)) {
-            System.out.println("Invalid Permit. Citation cannot be created.");
+            System.out.println("Car Permit not found or not expired. Citation cannot be created.");
             return;
         }
 
