@@ -128,7 +128,7 @@ public class Admin {
         
         System.out.println("1. Add Zone");
         System.out.println("2. Update Zone info");
-        System.out.println("3. Delete Zone infot");
+        System.out.println("3. Delete Zone info");
         System.out.println("4. View all zones");
         System.out.println("5. Exit");
         
