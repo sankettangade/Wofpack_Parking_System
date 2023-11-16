@@ -197,7 +197,7 @@ public class Admin {
         
         System.out.println("1. Add Permit");
         System.out.println("2. Update Permit");
-        System.out.println("3. Delete Permitt");
+        System.out.println("3. Delete Permit");
         System.out.println("4. View all Permit");
         System.out.println("5. Exit");
         
@@ -661,6 +661,162 @@ public class Admin {
 
     
     // Method to add a new permit
+    // public void addPermit() {
+    //     scanner.nextLine();
+        
+    //     System.out.print("Enter Parking Lot ID: ");
+    //     String parkingLotID = scanner.nextLine();
+    //     System.out.print("Enter Zone ID: ");
+    //     String zoneID = scanner.nextLine();
+    //     System.out.print("Enter Space Number: ");
+    //     int spaceNumber = scanner.nextInt();
+    //     scanner.nextLine(); 
+    
+        
+    //     String checkSpaceSql = "SELECT availability FROM Space WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
+    //     try (PreparedStatement checkSpaceStmt = conn.prepareStatement(checkSpaceSql)) {
+    //         checkSpaceStmt.setString(1, parkingLotID);
+    //         checkSpaceStmt.setString(2, zoneID);
+    //         checkSpaceStmt.setInt(3, spaceNumber);
+    //         ResultSet rs = checkSpaceStmt.executeQuery();
+    //         if (rs.next()) {
+    //             String availability = rs.getString("availability");
+    //             if ("N".equals(availability)) {
+    //                 System.out.println("The space is currently occupied. Cannot assign a permit.");
+    //                 return;
+    //             }
+    //         } else {
+    //             System.out.println("The specified space does not exist.");
+    //             return;
+    //         }
+    //     } catch (SQLException e) {
+    //         System.out.println("Error checking space availability: " + e.getMessage());
+    //         return;
+    //     }
+    
+        
+    //     System.out.print("Enter User ID: ");
+    //     String userID = scanner.nextLine();
+    
+    //     String checkDisabilityStatusSql = "SELECT disabilityStatus FROM Driver WHERE userID = ?";
+    //     String disabilityStatus = null;
+    //     try (PreparedStatement checkDisabilityStatusStmt = conn.prepareStatement(checkDisabilityStatusSql)) {
+    //         checkDisabilityStatusStmt.setString(1, userID);
+    //         ResultSet rs = checkDisabilityStatusStmt.executeQuery();
+    //         if (rs.next()) {
+    //             disabilityStatus = rs.getString("disabilityStatus");
+    //         }
+    //     } catch (SQLException e) {
+    //         System.out.println("Error checking disability status: " + e.getMessage());
+    //         return;
+    //     }
+    
+    //     if (disabilityStatus == null) {
+    //         System.out.println("User's disability status could not be determined.");
+    //         return;
+    //     }
+    
+    //     String checkSpaceSuitabilitySql = "SELECT spaceType FROM Space WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
+    //     try (PreparedStatement checkSpaceSuitabilityStmt = conn.prepareStatement(checkSpaceSuitabilitySql)) {
+    //         checkSpaceSuitabilityStmt.setString(1, parkingLotID);
+    //         checkSpaceSuitabilityStmt.setString(2, zoneID);
+    //         checkSpaceSuitabilityStmt.setInt(3, spaceNumber);
+    //         ResultSet rs = checkSpaceSuitabilityStmt.executeQuery();
+    //         if (rs.next()) {
+    //             String spaceType = rs.getString("spaceType");
+    //             if ("D".equals(disabilityStatus) && !"Handicap".equals(spaceType) ||
+    //                 !"D".equals(disabilityStatus) && "Handicap".equals(spaceType)) {
+    //                 System.out.println("The space is not suitable for the user's disability status.");
+    //                 return;
+    //             }
+    //         } else {
+    //             System.out.println("The specified space does not exist.");
+    //             return;
+    //         }
+    //     } catch (SQLException e) {
+    //         System.out.println("Error checking space suitability: " + e.getMessage());
+    //         return;
+    //     }
+    
+    //     System.out.print("Enter Permit ID: ");
+    //     String permitID = scanner.nextLine();
+    //     System.out.print("Enter Car License Number: ");
+    //     String carLicenseNo = scanner.nextLine();
+    //     System.out.print("Enter Start Date (YYYY-MM-DD): ");
+    //     String startDate = scanner.nextLine();
+    //     System.out.print("Enter Expiry Date (YYYY-MM-DD), leave blank if none: ");
+    //     String expDate = scanner.nextLine();
+    //     System.out.print("Enter Expiry Time (HH:MM:SS), leave blank if none: ");
+    //     String expTime = scanner.nextLine();
+    //     System.out.print("Enter Permit Type: ");
+    //     String permitType = scanner.nextLine();
+    
+    //     String addPermitSql = "INSERT INTO Permit (permitID, carLicenseNo, parkingLotID, zoneID, spaceNumber, startDate, expDate, expTime, userID, permitType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      
+    //     String updateSpaceSql = "UPDATE Space SET availability = 'N' WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
+    
+    //     try {
+    //         conn.setAutoCommit(false); // Start transaction
+    
+    //         // Insert the permit
+    //         try (PreparedStatement addPermitStmt = conn.prepareStatement(addPermitSql)) {
+    //             addPermitStmt.setString(1, permitID);
+    //             addPermitStmt.setString(2, carLicenseNo);
+    //             addPermitStmt.setString(3, parkingLotID);
+    //             addPermitStmt.setString(4, zoneID);
+    //             addPermitStmt.setInt(5, spaceNumber);
+    //             addPermitStmt.setDate(6, java.sql.Date.valueOf(startDate));
+    //             if (!expDate.isEmpty()) {
+    //                 addPermitStmt.setDate(7, java.sql.Date.valueOf(expDate));
+    //             } else {
+    //                 addPermitStmt.setNull(7, java.sql.Types.DATE);
+    //             }
+    //             if (!expTime.isEmpty()) {
+    //                 addPermitStmt.setTime(8, java.sql.Time.valueOf(expTime));
+    //             } else {
+    //                 addPermitStmt.setNull(8, java.sql.Types.TIME);
+    //             }
+    //             addPermitStmt.setString(9, userID);
+    //             addPermitStmt.setString(10, permitType);
+    //             int affectedRows = addPermitStmt.executeUpdate();
+    
+    //             if (affectedRows == 0) {
+    //                 throw new SQLException("Inserting permit failed, no rows affected.");
+    //             }
+    //         }
+    
+    //         try (PreparedStatement updateSpaceStmt = conn.prepareStatement(updateSpaceSql)) {
+    //             updateSpaceStmt.setString(1, parkingLotID);
+    //             updateSpaceStmt.setString(2, zoneID);
+    //             updateSpaceStmt.setInt(3, spaceNumber);
+    //             int affectedRows = updateSpaceStmt.executeUpdate();
+    
+    //             if (affectedRows == 0) {
+    //                 throw new SQLException("Updating space availability failed, no rows affected.");
+    //             }
+    //         }
+    
+    //         // Commit the transaction if all operations were successful
+    //         conn.commit();
+    //         System.out.println("Permit added and space marked as occupied.");
+    
+    //     } catch (SQLException e) {
+    //         System.out.println("Transaction failed: " + e.getMessage());
+    //         try {
+    //             conn.rollback(); // Rollback in case of any error
+    //         } catch (SQLException se) {
+    //             System.out.println("Error during rollback: " + se.getMessage());
+    //         }
+    //     } finally {
+    //         try {
+    //             conn.setAutoCommit(true); // Reset auto-commit to true
+    //         } catch (SQLException se) {
+    //             System.out.println("Error resetting auto-commit: " + se.getMessage());
+    //         }
+    //     }
+    // }
+
+    // Method to add a permit
     public void addPermit() {
         scanner.nextLine();
         
@@ -697,6 +853,50 @@ public class Admin {
         
         System.out.print("Enter User ID: ");
         String userID = scanner.nextLine();
+
+        String userStatus = null;
+
+        // Check user status and zone ID compatibility
+        String checkUserStatusSql = "SELECT status FROM User WHERE userID = ?";
+        try (PreparedStatement checkUserStatusStmt = conn.prepareStatement(checkUserStatusSql)) {
+            checkUserStatusStmt.setString(1, userID);
+            ResultSet rs = checkUserStatusStmt.executeQuery();
+            if (rs.next()) {
+                userStatus = rs.getString("status");
+                if (("S".equals(userStatus) && !zoneID.matches("^[ABCD]S$")) ||
+                    ("E".equals(userStatus) && !zoneID.matches("^[ABCD]$")) ||
+                    ("V".equals(userStatus) && !"V".equals(zoneID))) {
+                    System.out.println("This zone is not available for the user's status.");
+                    return;
+                }
+            } else {
+                System.out.println("User status could not be determined.");
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking user status: " + e.getMessage());
+            return;
+        }
+
+        // Check permit limits based on user status
+        String countPermitsSql = "SELECT COUNT(*) FROM Permit WHERE userID = ?";
+        try (PreparedStatement countPermitsStmt = conn.prepareStatement(countPermitsSql)) {
+            countPermitsStmt.setString(1, userID);
+            ResultSet permitCountRS = countPermitsStmt.executeQuery();
+            if (permitCountRS.next()) {
+                int permitCount = permitCountRS.getInt(1);
+                if (("S".equals(userStatus) || "V".equals(userStatus)) && permitCount >= 1) {
+                    System.out.println("Students and visitors are allowed only one permit.");
+                    return;
+                } else if ("E".equals(userStatus) && permitCount >= 2) {
+                    System.out.println("Employees are allowed up to two permits.");
+                    return;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking permit count: " + e.getMessage());
+            return;
+        }
     
         String checkDisabilityStatusSql = "SELECT disabilityStatus FROM Driver WHERE userID = ?";
         String disabilityStatus = null;
@@ -717,13 +917,14 @@ public class Admin {
         }
     
         String checkSpaceSuitabilitySql = "SELECT spaceType FROM Space WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
+        String spaceType = null;
         try (PreparedStatement checkSpaceSuitabilityStmt = conn.prepareStatement(checkSpaceSuitabilitySql)) {
             checkSpaceSuitabilityStmt.setString(1, parkingLotID);
             checkSpaceSuitabilityStmt.setString(2, zoneID);
             checkSpaceSuitabilityStmt.setInt(3, spaceNumber);
             ResultSet rs = checkSpaceSuitabilityStmt.executeQuery();
             if (rs.next()) {
-                String spaceType = rs.getString("spaceType");
+                spaceType = rs.getString("spaceType");
                 if ("D".equals(disabilityStatus) && !"Handicap".equals(spaceType) ||
                     !"D".equals(disabilityStatus) && "Handicap".equals(spaceType)) {
                     System.out.println("The space is not suitable for the user's disability status.");
@@ -751,7 +952,7 @@ public class Admin {
         System.out.print("Enter Permit Type: ");
         String permitType = scanner.nextLine();
     
-        String addPermitSql = "INSERT INTO Permit (permitID, carLicenseNo, parkingLotID, zoneID, spaceNumber, startDate, expDate, expTime, userID, permitType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String addPermitSql = "INSERT INTO Permit (permitID, carLicenseNo, parkingLotID, zoneID, spaceNumber,spaceType, startDate, expDate, expTime, userID, permitType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
       
         String updateSpaceSql = "UPDATE Space SET availability = 'N' WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
     
@@ -765,19 +966,20 @@ public class Admin {
                 addPermitStmt.setString(3, parkingLotID);
                 addPermitStmt.setString(4, zoneID);
                 addPermitStmt.setInt(5, spaceNumber);
-                addPermitStmt.setDate(6, java.sql.Date.valueOf(startDate));
+                addPermitStmt.setString(6, spaceType);
+                addPermitStmt.setDate(7, java.sql.Date.valueOf(startDate));
                 if (!expDate.isEmpty()) {
-                    addPermitStmt.setDate(7, java.sql.Date.valueOf(expDate));
+                    addPermitStmt.setDate(8, java.sql.Date.valueOf(expDate));
                 } else {
-                    addPermitStmt.setNull(7, java.sql.Types.DATE);
+                    addPermitStmt.setNull(8, java.sql.Types.DATE);
                 }
                 if (!expTime.isEmpty()) {
-                    addPermitStmt.setTime(8, java.sql.Time.valueOf(expTime));
+                    addPermitStmt.setTime(9, java.sql.Time.valueOf(expTime));
                 } else {
-                    addPermitStmt.setNull(8, java.sql.Types.TIME);
+                    addPermitStmt.setNull(9, java.sql.Types.TIME);
                 }
-                addPermitStmt.setString(9, userID);
-                addPermitStmt.setString(10, permitType);
+                addPermitStmt.setString(10, userID);
+                addPermitStmt.setString(11, permitType);
                 int affectedRows = addPermitStmt.executeUpdate();
     
                 if (affectedRows == 0) {
