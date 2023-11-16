@@ -30,7 +30,7 @@ public class Driver {
 
             // Create a connection to the database
             conn = DriverManager.getConnection(url, user, password);
-
+            conn.setAutoCommit(false);
             System.out.println("Connected to the database successfully.");
 
         } catch (Exception e) {
@@ -202,11 +202,18 @@ public class Driver {
 
             if (affectedRows > 0) {
                 System.out.println("A new user has been added.");
+                conn.commit();
             } else {
                 System.out.println("A user could not be added.");
+                conn.rollback();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
         }
 
         String insert_sql = "INSERT INTO Driver (userID, disabilityStatus) VALUES (?, ?)";
@@ -218,11 +225,18 @@ public class Driver {
 
             if (affectedRows > 0) {
                 System.out.println("A new driver has been added.");
+                conn.commit();
             } else {
                 System.out.println("A driver could not be added.");
+                conn.rollback();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
         }
     }
 
@@ -249,11 +263,18 @@ public class Driver {
 
             if (affectedRows > 0) {
                 System.out.println("User info has been updated.");
+                conn.commit();
             } else {
                 System.out.println("Could not update user info. Please check if the ID is correct.");
+                conn.rollback();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
         }
 
         String sql = "UPDATE Driver SET name = ?, disability_status = ? WHERE userID = ?";
@@ -266,11 +287,18 @@ public class Driver {
 
             if (affectedRows > 0) {
                 System.out.println("Driver info has been updated.");
+                conn.commit();
             } else {
                 System.out.println("Could not update driver info. Please check if the ID is correct.");
+                conn.rollback();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
         }
     }
 
@@ -284,11 +312,18 @@ public class Driver {
 
             if (affectedRows > 0) {
                 System.out.println("Driver "+ userID +" has been deleted.");
+                conn.commit();
             } else {
                 System.out.println("Could not delete driver info. Please check if the ID is correct or login correctly.");
+                conn.rollback();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
         }
     }
 
@@ -309,10 +344,10 @@ public class Driver {
 
                     if (rs_2.next()) {
                         System.out.println("User ID: " + rs_2.getString("useriD") +
-                                ", Name: " + rs_1.getString("name") +
-                                ", Status: " + rs_1.getString("status") +
-                                ", Disability Status: " + rs_2.getString("disability_status") +
-                                ", Password: " + rs_1.getString("password"));
+                                "\nName: " + rs_1.getString("name") +
+                                "\nStatus: " + rs_1.getString("status") +
+                                "\nDisability Status: " + rs_2.getString("disability_status") +
+                                "\nPassword: " + rs_1.getString("password"));
                     } else {
                         System.out.println("Driver with user ID " + userID + " not found.");
                     }
@@ -346,23 +381,20 @@ public class Driver {
 
         String sql = "INSERT INTO Vehicle (carLicenseNo, manufacturer, model, color, year) VALUES (?, ?, ?, ?, ?)";
 
-        try {
-            conn.setAutoCommit(false); // Start transaction
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, carLicenseNo);
-                pstmt.setString(2, manufacturer);
-                pstmt.setString(3, model);
-                pstmt.setString(4, color);
-                pstmt.setInt(5, year);
-                int affectedRows = pstmt.executeUpdate();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, carLicenseNo);
+            pstmt.setString(2, manufacturer);
+            pstmt.setString(3, model);
+            pstmt.setString(4, color);
+            pstmt.setInt(5, year);
+            int affectedRows = pstmt.executeUpdate();
 
-                if (affectedRows > 0) {
-                    System.out.println("A new vehicle has been added.");
-                    conn.commit(); // Commit the transaction
-                } else {
-                    System.out.println("A vehicle could not be added.");
-                    conn.rollback(); // Rollback in case of error
-                }
+            if (affectedRows > 0) {
+                System.out.println("A new vehicle has been added.");
+                conn.commit(); // Commit the transaction
+            } else {
+                System.out.println("A vehicle could not be added.");
+                conn.rollback(); // Rollback in case of error
             }
         } catch (SQLException e) {
             try {
@@ -375,35 +407,26 @@ public class Driver {
 
         String sql_1 = "INSERT INTO registered (userID, carLicenseNo) VALUES (?, ?)";
 
-        try {
-            conn.setAutoCommit(false); // Start transaction
-            try (PreparedStatement pstmt = conn.prepareStatement(sql_1)) {
-                pstmt.setString(1, userID);
-                pstmt.setString(2, carLicenseNo);
-                int affectedRows = pstmt.executeUpdate();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql_1)) {
+            pstmt.setString(1, userID);
+            pstmt.setString(2, carLicenseNo);
+            int affectedRows = pstmt.executeUpdate();
 
-                if (affectedRows > 0) {
-                    System.out.println("A new vehicle has been registered.");
-                    conn.commit(); // Commit the transaction
-                } else {
-                    System.out.println("A vehicle could not be registered.");
-                    conn.rollback(); // Rollback in case of error
-                }
+            if (affectedRows > 0) {
+                System.out.println("A new vehicle has been registered.");
+                conn.commit(); // Commit the transaction
+            } else {
+                System.out.println("A vehicle could not be registered.");
+                conn.rollback(); // Rollback in case of error
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             try {
                 conn.rollback(); // Rollback in case of any error
             } catch (SQLException se) {
                 System.out.println(se.getMessage());
             }
-            System.out.println(e.getMessage());
-        } finally {
-            try {
-                conn.setAutoCommit(true); // Reset auto-commit to true
-            } catch (SQLException se) {
-                System.out.println(se.getMessage());
-            }
-        }
+        } 
     }
 
     // Method to update an existing vehicle
@@ -423,34 +446,25 @@ public class Driver {
 
         String sql = "UPDATE Vehicle SET manufacturer = ?, model = ?, color = ?, year = ? WHERE carLicenseNo = ?";
 
-        try {
-            conn.setAutoCommit(false); // Start transaction
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, manufacturer);
-                pstmt.setString(2, model);
-                pstmt.setString(3, color);
-                pstmt.setInt(4, year);
-                pstmt.setString(5, carLicenseNo);
-                int affectedRows = pstmt.executeUpdate();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, manufacturer);
+            pstmt.setString(2, model);
+            pstmt.setString(3, color);
+            pstmt.setInt(4, year);
+            pstmt.setString(5, carLicenseNo);
+            int affectedRows = pstmt.executeUpdate();
 
-                if (affectedRows > 0) {
-                    System.out.println("Vehicle has been updated.");
-                    conn.commit(); // Commit the transaction
-                } else {
-                    System.out.println("Could not update vehicle. Please check if the Car License Number is correct.");
-                    conn.rollback(); // Rollback in case of error
-                }
+            if (affectedRows > 0) {
+                System.out.println("Vehicle has been updated.");
+                conn.commit(); // Commit the transaction
+            } else {
+                System.out.println("Could not update vehicle. Please check if the Car License Number is correct.");
+                conn.rollback(); // Rollback in case of error
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             try {
                 conn.rollback(); // Rollback in case of any error
-            } catch (SQLException se) {
-                System.out.println(se.getMessage());
-            }
-            System.out.println(e.getMessage());
-        } finally {
-            try {
-                conn.setAutoCommit(true); // Reset auto-commit to true
             } catch (SQLException se) {
                 System.out.println(se.getMessage());
             }
@@ -465,19 +479,16 @@ public class Driver {
 
         String sql = "DELETE FROM Vehicle WHERE carLicenseNo = ?";
 
-        try {
-            conn.setAutoCommit(false); // Start transaction
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, carLicenseNo);
-                int affectedRows = pstmt.executeUpdate();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, carLicenseNo);
+            int affectedRows = pstmt.executeUpdate();
 
-                if (affectedRows > 0) {
-                    System.out.println("Vehicle has been deleted.");
-                    conn.commit(); // Commit the transaction
-                } else {
-                    System.out.println("Could not delete vehicle. Please check the Car License Number is correct.");
-                    conn.rollback(); // Rollback in case of error
-                }
+            if (affectedRows > 0) {
+                System.out.println("Vehicle has been deleted.");
+                conn.commit(); // Commit the transaction
+            } else {
+                System.out.println("Could not delete vehicle. Please check the Car License Number is correct.");
+                conn.rollback(); // Rollback in case of error
             }
         } catch (SQLException e) {
             try {
@@ -486,13 +497,7 @@ public class Driver {
                 System.out.println(se.getMessage());
             }
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                conn.setAutoCommit(true); // Reset auto-commit to true
-            } catch (SQLException se) {
-                System.out.println(se.getMessage());
-            }
-        }
+        } 
     }
 
 
@@ -511,10 +516,10 @@ public class Driver {
     
             while (rs.next()) {
                 System.out.println("Car License Number: " + rs.getString("carLicenseNo") +
-                                ", Manufacturer: " + rs.getString("manufacturer") +
-                                ", Model: " + rs.getString("model") +
-                                ", Color: " + rs.getString("color") +
-                                ", Year: " + rs.getInt("year"));
+                                "\nManufacturer: " + rs.getString("manufacturer") +
+                                "\nModel: " + rs.getString("model") +
+                                "\nColor: " + rs.getString("color") +
+                                "\nYear: " + rs.getInt("year"));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -620,7 +625,6 @@ public class Driver {
                 if (paymentStatus == "DUE") {
                     paymentStatus = "PAID";
                     String sql_2 = "UPDATE Citations SET paymentStatus = ? WHERE carLicenseNo = ?";
-                    conn.setAutoCommit(false); // Start transaction
                     try (PreparedStatement pstmt_2 = conn.prepareStatement(sql_2)) {
                         pstmt_2.setString(1, paymentStatus);
                         pstmt_2.setString(2, carLicenseNo);
@@ -671,7 +675,6 @@ public class Driver {
                 if (appeal == "no") {
                     appeal = "yes";
                     String sql_2 = "UPDATE Citations SET appeal = ? WHERE carLicenseNo = ?";
-                    conn.setAutoCommit(false); // Start transaction
                     try (PreparedStatement pstmt_2 = conn.prepareStatement(sql_2)) {
                         pstmt_2.setString(1, appeal);
                         pstmt_2.setString(2, carLicenseNo);
