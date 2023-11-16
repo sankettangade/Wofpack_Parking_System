@@ -91,6 +91,13 @@ public class SecurityPersonnel {
         String id = scanner.nextLine();
         System.out.print("Enter carLicense Number: ");
         String carLicenseNo = scanner.nextLine();
+
+        // Check if the car has a valid permit
+        if (!checkValidPermit(carLicenseNo)) {
+            System.out.println("Invalid Permit. Citation cannot be created.");
+            return;
+        }
+
         System.out.print("Enter Parking Lot ID: ");
         String parkingLotId = scanner.nextLine();        
         LocalDate currentDate = LocalDate.now();
@@ -107,7 +114,6 @@ public class SecurityPersonnel {
         String paymentStatus = scanner.next();
         String sql = "INSERT INTO Citations (citationNumber, carLicenseNo, parkingLotID, citationDate, citationTime, category, fee, paymentStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, id);
             pstmt.setString(2, carLicenseNo);
@@ -136,6 +142,23 @@ public class SecurityPersonnel {
             }
         }
     }
+
+    // Method to check if the car has a valid permit
+    private boolean checkValidPermit(String carLicenseNo) {
+        String permitCheckQuery = "SELECT * FROM Permit WHERE carLicenseNo = ? AND expDate < CURRENT_DATE";
+        
+        try (PreparedStatement permitCheckStmt = conn.prepareStatement(permitCheckQuery)) {
+            permitCheckStmt.setString(1, carLicenseNo);
+            ResultSet resultSet = permitCheckStmt.executeQuery();
+            
+            return resultSet.next(); // Returns true if a valid permit is found
+        } catch (SQLException e) {
+            System.out.println("Error checking permit: " + e.getMessage());
+            return false; // Return false in case of an exception or no valid permit
+        }
+    }
+
+    
     
     private void updateCitation() {
 
