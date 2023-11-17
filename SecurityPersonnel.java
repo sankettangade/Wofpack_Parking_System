@@ -53,7 +53,8 @@ public class SecurityPersonnel {
             System.out.println("4. View all Citations");
             System.out.println("5. Delete Citation");
             System.out.println("6. Update Payment Status");
-            System.out.println("7. Exit");
+            System.out.println("7. Report Menu");
+            System.out.println("8. Exit");
             System.out.print("Enter your choice: ");
             
            choice = scanner.nextInt();
@@ -78,14 +79,79 @@ public class SecurityPersonnel {
                 	updatePaymentStatus();
                 	break;
                 case 7:
-                    System.out.println("Exiting. Goodbye!");       
-					// LoginApplication.main(null);
-                    break;
+                	reportMenu();
+                	break;
+                case 8:
+                	System.out.println("Exiting. Goodbye!");       
+					LoginApplication.main(null);
                 default:
                     System.out.println("Invalid choice. Please try selecting from the Menu again");
             }
+        } while (choice != 6);
+    }
+    
+    public void reportMenu() {
+    	int choice = 0;
+        do {
+            System.out.println("\nWelcome, to Report Menu!");
+            System.out.println("-----------------------------------------------");
+            System.out.println("1. Get Lot Citation Count");
+            System.out.println("2. Get Zones");
+            System.out.println("3. Get Violation Car Count");
+            System.out.println("4. Get Permitted Employees");
+            System.out.println("5. Get Permit Information");
+            System.out.println("6. Get Available Spaces");
+            System.out.println("7. Exit");
+            System.out.print("Enter your choice: ");
+            
+           choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                	scanner.nextLine();
+                    System.out.print("Enter Start Time Range(YYYY-MM-DD): ");
+                    String start = scanner.nextLine();
+                    System.out.print("Enter End Time Range(YYYY-MM-DD): ");
+                    String end = scanner.nextLine();
+                	getLotCitationCount(start,end);
+                    break;
+                case 2:
+                	getZones();
+                    break;
+                case 3:
+                	getViolationCarCount();
+                    break;
+                case 4:
+                	scanner.nextLine();
+                    System.out.print("Enter Zone ID: ");
+                    String p_id = scanner.nextLine();
+                	getPermittedEmployeesCount(p_id);
+                    break;
+                case 5:
+                	scanner.nextLine();
+                    System.out.print("Enter User ID: ");
+                    String u_id = scanner.nextLine();
+                	getPermitInformation(u_id);
+                    break;
+                case 6:
+                	scanner.nextLine();
+                    System.out.print("Enter Parking ID: ");
+                    String p_id_1 = scanner.nextLine();
+                    System.out.print("Enter Space Type: ");
+                    String space_type = scanner.nextLine();
+                	getAvailableSpaces(p_id_1,space_type);
+                	break;
+                case 7:
+                    System.out.println("Exiting. Goodbye!");     
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try selecting from the Menu again");
+                    break;
+            }
         } while (choice != 7);
     }
+    
+    
 
     
     private void createCitation() {
@@ -346,48 +412,40 @@ public class SecurityPersonnel {
         }
     }
 
-    public void getLotCitationCount(String timeRange) {
+    public void getLotCitationCount(String startTime, String endTime) {
         String sql;
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        if (timeRange == null || timeRange.isEmpty()) {
-            // Default to monthly if time range is not selected
-            sql = "SELECT parkingLotID, zone, COUNT(*) as citationCount FROM Citations WHERE MONTH(citationDate) = MONTH(CURRENT_DATE()) GROUP BY parkingLotID, zone";
-        } else {
-            // Customize the SQL query based on the selected time range (you may need to adjust this based on your database schema)
-            // Example: Monthly, Weekly, Daily
-            sql = "SELECT parkingLotID, zone, COUNT(*) as citationCount FROM Citations WHERE DATE_SUB(CURDATE(), INTERVAL 1 " + timeRange.toUpperCase() + ") <= citationDate GROUP BY parkingLotID, zone";
-        }
+        LocalDate startDate = LocalDate.parse(startTime, formatter);
+        LocalDate endDate = LocalDate.parse(endTime, formatter);
+        
+        sql = "SELECT parkingLotID,COUNT(*) as citationCount FROM Citations WHERE citationDate BETWEEN '" + startDate + "' AND '" + endDate + "' GROUP BY parkingLotID";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             ResultSet rs = pstmt.executeQuery();
 
-            List<String> citationCounts = new ArrayList<>();
-
             while (rs.next()) {
                 String parkingLotID = rs.getString("parkingLotID");
-                String zone = rs.getString("zone");
                 int count = rs.getInt("citationCount");
                 
-                System.out.println("(" + parkingLotID + ", " + zone + "): " + count + " citations");
+                System.out.println("Praking Lot:" + parkingLotID + "," + count + " citations");
             }
 
-            if (citationCounts.isEmpty()) {
-                System.out.println("No citation counts found for the specified time range.");
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void getZones() {
-        String sql = "SELECT parkingLotID, zone FROM ParkingLots";
+        String sql = "SELECT parkingLotID, zoneID FROM Zone";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 String parkingLotID = rs.getString("parkingLotID");
-                String zone = rs.getString("zone");
+                String zone = rs.getString("zoneID");
 
                 System.out.println("(" + parkingLotID + ", " + zone + ")");
             }
@@ -397,34 +455,34 @@ public class SecurityPersonnel {
     }
 
     public void getViolationCarCount() {
-        String sql = "SELECT DISTINCT carLicenseNo FROM Citations WHERE paymentStatus = 'Unpaid'";
+        String sql = "SELECT COUNT(DISTINCT carLicenseNo) as violationCount FROM Citations WHERE paymentStatus = 'DUE'";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                String carLicenseNo = rs.getString("carLicenseNo");
-                System.out.println(carLicenseNo);
+                String carCount = rs.getString("violationCount");
+                System.out.println(carCount);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void getPermittedEmployees(String parkingLotID) {
-        if (parkingLotID == null || parkingLotID.isEmpty()) {
-            throw new IllegalArgumentException("Parking Lot ID cannot be null or empty.");
+    public void getPermittedEmployeesCount(String ZoneID) {
+        if (ZoneID == null || ZoneID.isEmpty()) {
+            throw new IllegalArgumentException("Zone ID cannot be null or empty.");
         }
 
-        String sql = "SELECT DISTINCT driverID FROM Permits WHERE parkingLotID = ?";
+        String sql = "SELECT COUNT(DISTINCT userID) as userCount FROM Permit WHERE zoneID = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, parkingLotID);
+            pstmt.setString(1, ZoneID);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                String driverID = rs.getString("driverID");
-                System.out.println(driverID);
+                String userCount = rs.getString("userCount");
+                System.out.println(userCount);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -436,7 +494,7 @@ public class SecurityPersonnel {
             throw new IllegalArgumentException("User ID cannot be null or empty.");
         }
 
-        String sql = "SELECT * FROM Permits WHERE driverID = ?";
+        String sql = "SELECT * FROM Permit WHERE userID = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, userID);
@@ -462,12 +520,13 @@ public class SecurityPersonnel {
         if (parkingLotID == null || parkingLotID.isEmpty() || spaceType == null || spaceType.isEmpty()) {
             throw new IllegalArgumentException("Parking Lot ID and Space Type cannot be null or empty.");
         }
-
-        String sql = "SELECT spaceNumber FROM ParkingSpaces WHERE parkingLotID = ? AND spaceType = ? AND occupied = 0";
+        String availability = "Y";
+        String sql = "SELECT spaceNumber FROM Space WHERE parkingLotID = ? AND spaceType = ? AND availability = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, parkingLotID);
             pstmt.setString(2, spaceType);
+            pstmt.setString(3, availability);
             ResultSet rs = pstmt.executeQuery();
 
             List<String> availableSpaces = new ArrayList<>();
