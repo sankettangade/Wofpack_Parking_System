@@ -79,11 +79,12 @@ public class SecurityPersonnel {
                 	break;
                 case 7:
                     System.out.println("Exiting. Goodbye!");       
-					LoginApplication.main(null);
+					// LoginApplication.main(null);
+                    break;
                 default:
                     System.out.println("Invalid choice. Please try selecting from the Menu again");
             }
-        } while (choice != 6);
+        } while (choice != 7);
     }
 
     
