@@ -180,6 +180,8 @@ public class Driver {
 
     public void addDriverInfo() {
         scanner.nextLine();
+        System.out.print("Enter Driver's userID: ");
+        String userID = scanner.nextLine();
         System.out.print("Enter Driver's name: ");
         String name = scanner.nextLine();
         System.out.print("Enter status: ");
@@ -188,8 +190,6 @@ public class Driver {
         String disability_status = scanner.nextLine();
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
-
-        // String userID = "";
 
         String sql = "INSERT INTO User (userID, name, status, password) VALUES (?, ?, ?, ?)";
 
@@ -277,12 +277,11 @@ public class Driver {
             }
         }
 
-        String sql = "UPDATE Driver SET name = ?, disability_status = ? WHERE userID = ?";
+        String sql = "UPDATE Driver SET disabilityStatus = ? WHERE userID = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, name);
-            pstmt.setString(2, disability_status);
-            pstmt.setString(3, userID);
+            pstmt.setString(1, disability_status);
+            pstmt.setString(2, userID);
             int affectedRows = pstmt.executeUpdate();
 
             if (affectedRows > 0) {
@@ -346,7 +345,7 @@ public class Driver {
                         System.out.println("User ID: " + rs_2.getString("useriD") +
                                 "\nName: " + rs_1.getString("name") +
                                 "\nStatus: " + rs_1.getString("status") +
-                                "\nDisability Status: " + rs_2.getString("disability_status") +
+                                "\nDisability Status: " + rs_2.getString("disabilityStatus") +
                                 "\nPassword: " + rs_1.getString("password"));
                     } else {
                         System.out.println("Driver with user ID " + userID + " not found.");
@@ -477,17 +476,36 @@ public class Driver {
         System.out.print("Enter Car License Number to delete: ");
         String carLicenseNo = scanner.nextLine();
 
-        String sql = "DELETE FROM Vehicle WHERE carLicenseNo = ?";
-
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, carLicenseNo);
-            int affectedRows = pstmt.executeUpdate();
+        String sql_1 = "DELETE FROM registered WHERE carLicenseNo = ?";
+        
+        try (PreparedStatement pstmt_1 = conn.prepareStatement(sql_1)) {
+            pstmt_1.setString(1, carLicenseNo);
+            int affectedRows = pstmt_1.executeUpdate();
 
             if (affectedRows > 0) {
-                System.out.println("Vehicle has been deleted.");
-                conn.commit(); // Commit the transaction
+                System.out.println("Vehicle's registration has been removed.");
+                String sql_2 = "DELETE FROM Vehicle WHERE carLicenseNo = ?";
+                try (PreparedStatement pstmt_2 = conn.prepareStatement(sql_2)) {
+                    pstmt_2.setString(1, carLicenseNo);
+                    int affectedRows_2 = pstmt_2.executeUpdate();
+
+                    if (affectedRows_2 > 0) {
+                        System.out.println("Vehicle has been removed.");
+                        conn.commit(); // Commit the transaction
+		            } else {
+		                System.out.println("Could not delete vehicle. Please check the Car License Number is correct.");
+		                conn.rollback(); // Rollback in case of error
+		            }
+                } catch (SQLException e) {
+                    try {
+                        conn.rollback(); // Rollback in case of any error
+                    } catch (SQLException se) {
+                        System.out.println(se.getMessage());
+                    }
+                    System.out.println(e.getMessage());
+                } 
             } else {
-                System.out.println("Could not delete vehicle. Please check the Car License Number is correct.");
+            	System.out.println("Could not de-register the vehicle. Please check the Car License Number is correct.");
                 conn.rollback(); // Rollback in case of error
             }
         } catch (SQLException e) {
@@ -547,7 +565,7 @@ public class Driver {
                         "\nPermit Type: " + rs.getString("permitType") 
                         );
             } else {
-                System.out.println("User with user ID " + userID + " not found.");
+                System.out.println("Permit for user ID " + userID + " does not exist.");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -585,7 +603,7 @@ public class Driver {
                                 "\nCar License No: " + rs_1.getString("carLicenseNo") +
                                 "\nParking Lot ID: " + rs_1.getString("parkingLotID") +
                                 "\nCitation Date: " + rs_1.getString("citationDate") +
-                                "\nCitation Time: " + rs_1.getInt("citationTime") +
+                                "\nCitation Time: " + rs_1.getString("citationTime") +
                                 "\nCitation Date: " + rs_1.getString("citationDate") +
                                 "\nCategory: " + rs_1.getString("category") +
                                 "\nFee: " + rs_1.getString("fee") +
@@ -622,7 +640,7 @@ public class Driver {
 
             while (rs_1.next()) {
                 String paymentStatus = rs_1.getString("paymentStatus");
-                if (paymentStatus == "DUE") {
+                if (paymentStatus.equals("DUE")) {
                     paymentStatus = "PAID";
                     String sql_2 = "UPDATE Citations SET paymentStatus = ? WHERE carLicenseNo = ?";
                     try (PreparedStatement pstmt_2 = conn.prepareStatement(sql_2)) {
@@ -672,7 +690,7 @@ public class Driver {
 
             while (rs_1.next()) {
                 String appeal = rs_1.getString("appeal");
-                if (appeal == "no") {
+                if (appeal.equals("no")) {
                     appeal = "yes";
                     String sql_2 = "UPDATE Citations SET appeal = ? WHERE carLicenseNo = ?";
                     try (PreparedStatement pstmt_2 = conn.prepareStatement(sql_2)) {
