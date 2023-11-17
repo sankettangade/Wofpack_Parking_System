@@ -12,12 +12,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The SecurityPersonnel class represents a security personnel managing citations and reports.
+ */
 public class SecurityPersonnel {
-	private Connection conn;
+    private Connection conn;
     private Properties prop;
     private String userID;
     private Scanner scanner;
 
+    /**
+     * Constructs a SecurityPersonnel object with the specified user ID.
+     *
+     * @param userID The user ID of the security personnel.
+     */
     public SecurityPersonnel(String userID) {
         this.userID = userID;
         this.scanner = new Scanner(System.in);
@@ -40,7 +48,9 @@ public class SecurityPersonnel {
         }
     }
     
-    
+    /**
+     * Displays the main menu for the security personnel.
+     */
     public void showMenu() {
     	
     	int choice = 0;
@@ -90,6 +100,9 @@ public class SecurityPersonnel {
         } while (choice != 6);
     }
     
+    /**
+     * Displays the report menu for the security personnel.
+     */
     public void reportMenu() {
     	int choice = 0;
         do {
@@ -153,7 +166,9 @@ public class SecurityPersonnel {
     
     
 
-    
+    /**
+     * Creates a new citation based on user input.
+     */
     private void createCitation() {
         scanner.nextLine();
         System.out.print("Enter Citation ID: ");
@@ -212,7 +227,12 @@ public class SecurityPersonnel {
         }
     }
 
-    
+    /**
+     * Checks if a car has a valid permit.
+     *
+     * @param carLicenseNo The license number of the car.
+     * @return True if the car has a valid permit; otherwise, false.
+     */
     private boolean checkValidPermit(String carLicenseNo) {
         String permitCheckQuery = "SELECT * FROM Permit WHERE carLicenseNo = ? AND expDate > CURRENT_DATE";
         
@@ -228,7 +248,9 @@ public class SecurityPersonnel {
     }
 
     
-    
+    /**
+     * Updates an existing citation based on user input.
+     */
     private void updateCitation() {
 
     	scanner.nextLine();
@@ -277,7 +299,13 @@ public class SecurityPersonnel {
         }
     }
 
-
+    /**
+     * Updates a specific attribute of a citation.
+     *
+     * @param citationId     The ID of the citation to be updated.
+     * @param attributeName  The name of the attribute to be updated.
+     * @param newValue       The new value for the attribute.
+     */
     private void updateAttribute(String citationId, String attributeName, String newValue) {
         String sql = "UPDATE Citations SET " + attributeName + " = ? WHERE citationNumber = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -304,6 +332,9 @@ public class SecurityPersonnel {
         }
     }
     
+    /**
+     * Displays all citations stored in the database.
+     */
     private void viewAllCitations() {
         String sql = "SELECT * FROM Citations";
         
@@ -324,6 +355,10 @@ public class SecurityPersonnel {
         }
     }
     
+    
+    /**
+     * Displays the details of a specific citation based on user input.
+     */
     private void viewCitation() {
     	scanner.nextLine();
         System.out.print("Enter Citation Number: ");
@@ -351,6 +386,10 @@ public class SecurityPersonnel {
         }
     }
     
+    
+    /**
+     * Deletes a specific citation based on user input.
+     */
     private void deleteCitation() {
         scanner.nextLine();
         System.out.print("Enter Citation Number you want to delete: ");
@@ -379,6 +418,10 @@ public class SecurityPersonnel {
         }
     }
     
+    
+    /**
+     * Updates the payment status of a specific citation based on user input.
+     */
     private void updatePaymentStatus() {
         scanner.nextLine();
         System.out.print("Enter Citation Number to update payment status: ");
@@ -412,6 +455,13 @@ public class SecurityPersonnel {
         }
     }
 
+    
+    /**
+     * Retrieves the citation count for each parking lot within a specified time range.
+     *
+     * @param startTime The start time of the range.
+     * @param endTime   The end time of the range.
+     */
     public void getLotCitationCount(String startTime, String endTime) {
         String sql;
         
@@ -437,6 +487,11 @@ public class SecurityPersonnel {
         }
     }
 
+    
+    /**
+     * Retrieves the zones information from the database.
+     */
+
     public void getZones() {
         String sql = "SELECT parkingLotID, zoneID FROM Zone";
 
@@ -453,7 +508,11 @@ public class SecurityPersonnel {
             e.printStackTrace();
         }
     }
-
+    
+    
+    /**
+     * Retrieves the count of distinct car licenses with 'DUE' payment status.
+     */
     public void getViolationCarCount() {
         String sql = "SELECT COUNT(DISTINCT carLicenseNo) as violationCount FROM Citations WHERE paymentStatus = 'DUE'";
 
@@ -469,6 +528,13 @@ public class SecurityPersonnel {
         }
     }
 
+    
+
+    /**
+     * Retrieves the count of permitted employees for a specific zone.
+     *
+     * @param ZoneID The ID of the zone.
+     */
     public void getPermittedEmployeesCount(String ZoneID) {
         if (ZoneID == null || ZoneID.isEmpty()) {
             throw new IllegalArgumentException("Zone ID cannot be null or empty.");
@@ -489,6 +555,12 @@ public class SecurityPersonnel {
         }
     }
 
+    
+    /**
+     * Retrieves the permit information for a specific user ID.
+     *
+     * @param userID The user ID for which permit information is retrieved.
+     */
     public void getPermitInformation(String userID) {
         if (userID == null || userID.isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be null or empty.");
@@ -515,6 +587,14 @@ public class SecurityPersonnel {
             e.printStackTrace();
         }
     }
+
+    
+    /**
+     * Retrieves the available spaces for a specific parking lot and space type.
+     *
+     * @param parkingLotID The ID of the parking lot.
+     * @param spaceType    The type of space.
+     */
 
     public void getAvailableSpaces(String parkingLotID, String spaceType) {
         if (parkingLotID == null || parkingLotID.isEmpty() || spaceType == null || spaceType.isEmpty()) {

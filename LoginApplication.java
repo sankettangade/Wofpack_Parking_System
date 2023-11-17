@@ -8,15 +8,25 @@ import java.util.Scanner;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+/**
+ * The LoginApplication class represents a simple login system for a parking application.
+ * It allows users to log in, create new accounts, and performs different actions based on user roles.
+ */
 public class LoginApplication {
 
-    
+    /**
+     * The main method of the LoginApplication class.
+     * It establishes a database connection, provides a menu for user interaction, and handles user choices.
+     *
+     * @param args Command-line arguments (not used in this application).
+     */
     public static void main(String[] args) {
         Properties prop = new Properties();
         Connection conn = null;
         Scanner scanner = new Scanner(System.in);
 
         try {
+            // Load database configuration from properties file
             InputStream input = new FileInputStream("config.properties");
             prop.load(input);
             input.close(); // Close the input stream after use
@@ -25,11 +35,13 @@ public class LoginApplication {
             String user = prop.getProperty("db.user");
             String dbPassword = prop.getProperty("db.password");
 
+            // Establish a database connection
             conn = DriverManager.getConnection(url, user, dbPassword);
             conn.setAutoCommit(false);
-            
+
             int choice = 0;
             do {
+                // Display menu options
                 System.out.println("\nWelcome to Wolfpack Parking System!");
                 System.out.println("-----------------------------------------------");
                 System.out.println("1. Login");
@@ -55,9 +67,10 @@ public class LoginApplication {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            // Close database connection and scanner
             try {
                 if (conn != null && !conn.isClosed()) {
-                    conn.close(); // Close the database connection here
+                    conn.close();
                     if (conn.isClosed()) {
                         System.out.println("Database connection successfully closed.");
                     } else {
@@ -74,17 +87,22 @@ public class LoginApplication {
         }
     }
 
-    
+    /**
+     * Handles the login process by taking user credentials, querying the database, and redirecting to appropriate user interfaces.
+     *
+     * @param scanner The Scanner object used for user input.
+     * @param conn    The database Connection object.
+     */
     private static void login(Scanner scanner, Connection conn) {
-    	
-    	scanner.nextLine();
-    	System.out.println("Enter user ID:");
-    	String userID = scanner.nextLine();
+
+        scanner.nextLine();
+        System.out.println("Enter user ID:");
+        String userID = scanner.nextLine();
         System.out.println("Enter password:");
         String userPassword = scanner.nextLine();
 
-         String sql = "SELECT status, password FROM User WHERE userID = ?";
-            
+        String sql = "SELECT status, password FROM User WHERE userID = ?";
+
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, userID);
             ResultSet rs = stmt.executeQuery();
@@ -95,12 +113,12 @@ public class LoginApplication {
                     String status = rs.getString("status");
                     switch (status) {
                         case "S":
-                        	System.out.println("Welcome NC State Student");
+                            System.out.println("Welcome NC State Student");
                             Driver st_driver = new Driver(userID);
                             st_driver.show_welcome_page();
                             break;
                         case "E":
-                        	System.out.println("Welcome NC State Staff");
+                            System.out.println("Welcome NC State Staff");
                             Driver e_driver = new Driver(userID);
                             e_driver.show_welcome_page();
                             break;
@@ -130,21 +148,28 @@ public class LoginApplication {
             } else {
                 System.out.println("UserID or password not found! Please try again");
                 conn.rollback();
-               
+
             }
         } catch (SQLException e) {
-        	try {
-				conn.rollback();
-			} catch (SQLException rollbackException) {
-				rollbackException.printStackTrace();
-			}
-			e.printStackTrace();
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
+            e.printStackTrace();
         }
-    	
+
     }
+
+    /**
+     * Handles the process of creating a new user account by taking user details and inserting them into the database.
+     *
+     * @param scanner The Scanner object used for user input.
+     * @param conn    The database Connection object.
+     */
     private static void createUserAccount(Scanner scanner, Connection conn) {
-    	
-    	scanner.nextLine();
+
+        scanner.nextLine();
         System.out.println("Enter new user ID:");
         String newUserID = scanner.nextLine();
         System.out.println("Enter name:");
@@ -170,7 +195,7 @@ public class LoginApplication {
             int userResult = insertUserStmt.executeUpdate();
 
             if (userResult > 0) {
-                boolean additionalInfoAdded = addAdditionalUserInfo(scanner, conn, newUserID, userType);
+                boolean additionalInfoAdded = addAdditionalUserInfo(scanner, conn, newUserID);
                 if (additionalInfoAdded) {
                     conn.commit(); // Commit transaction only if all data is inserted properly
                     System.out.println("Account created successfully.");
@@ -183,28 +208,39 @@ public class LoginApplication {
                 System.out.println("Failed to create account.");
             }
         } catch (SQLException e) {
-        	try {
-        		conn.rollback(); // Rollback on exception
-        	} catch (SQLException rollbackException) {
-			rollbackException.printStackTrace();
-        	}
-        	e.printStackTrace();
+            try {
+                conn.rollback(); // Rollback on exception
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
+            e.printStackTrace();
         }
     }
 
-    private static boolean addAdditionalUserInfo(Scanner scanner, Connection conn, String userID, String userType) throws SQLException {
-        switch (userType) {
-            case "S":
-            case "E":
-            case "V":
-                System.out.println("Enter disability status (D/N), D: Diabled, N: No:");
+    /**
+     * Adds additional user information in the Driver table
+     * @param scanner The Scanner object used for user input.
+     * @param conn    The database Connection object.
+     * @param userID  The user ID for whom additional information is being added.
+     * @return True if additional information is added successfully, false otherwise.
+     * @throws SQLException If a database access error occurs.
+     */
+    private static boolean addAdditionalUserInfo(Scanner scanner, Connection conn, String userID) throws SQLException {
+                System.out.println("Enter disability status (D/N), D: Disabled, N: No:");
                 String disabilityStatus = scanner.nextLine().toUpperCase();
                 return insertIntoDriver(conn, userID, disabilityStatus);
-            default:
-                return true;
-        }
+
     }
 
+    /**
+     * Inserts additional information into the Driver table based on user type.
+     *
+     * @param conn            The database Connection object.
+     * @param userID          The user ID for whom additional information is being added.
+     * @param disabilityStatus The disability status of the user.
+     * @return True if the information is added successfully, false otherwise.
+     * @throws SQLException If a database access error occurs.
+     */
     private static boolean insertIntoDriver(Connection conn, String userID, String disabilityStatus) throws SQLException {
         String sql = "INSERT INTO Driver (userID, disabilityStatus) VALUES (?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
