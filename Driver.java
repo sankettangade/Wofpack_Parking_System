@@ -7,11 +7,23 @@ import java.util.Properties;
 import java.io.FileInputStream;
 import java.util.Scanner;
 
+
+
+/**
+ * The Driver class represents a driver in a transportation system with associated functionalities.
+ */
 public class Driver {
     private Connection conn;
     private Properties prop;
     private String userID;
     private Scanner scanner;
+
+    
+    /**
+     * Constructs a Driver instance with the specified user ID.
+     *
+     * @param userID The unique identifier for the driver.
+     */
 
     public Driver(String userID) {
         this.userID = userID;
@@ -39,6 +51,10 @@ public class Driver {
     }
 
 
+    
+    /**
+     * Displays the welcome page and handles user interaction for various functionalities.
+     */
     public void show_welcome_page() {
         int choice = 0;
         do {
@@ -76,6 +92,12 @@ public class Driver {
     }
 
 
+    
+    /**
+     * Handles the driver-specific menu options and user interactions.
+     *
+     * @param userID The user ID of the driver.
+     */
     private void driverMenu(String userID) {
         int choice = 0;
         do {
@@ -111,6 +133,12 @@ public class Driver {
     }
 
 
+    
+    /**
+     * Handles the vehicle-specific menu options and user interactions.
+     *
+     * @param userID The user ID of the driver.
+     */
     private void vehicleMenu(String userID) {
         int choice = 0;
         do {
@@ -147,6 +175,12 @@ public class Driver {
     }
 
 
+    
+    /**
+     * Handles the citations-specific menu options and user interactions.
+     *
+     * @param userID The user ID of the driver.
+     */
     private void citationsMenu(String userID) {
         int choice = 0;
         do {
@@ -178,6 +212,9 @@ public class Driver {
     }
 
 
+    /**
+     * Adds driver information to the database.
+     */
     public void addDriverInfo() {
         scanner.nextLine();
         System.out.print("Enter Driver's userID: ");
@@ -241,6 +278,12 @@ public class Driver {
     }
 
 
+    
+    /**
+     * Updates driver information in the database.
+     *
+     * @param userID The user ID of the driver whose information is to be updated.
+     */
     public void updateDriverInfo(String userID) {
         scanner.nextLine();
         System.out.print("Enter new Driver Name: ");
@@ -302,6 +345,11 @@ public class Driver {
     }
 
 
+    /**
+     * Deletes driver information from the database.
+     *
+     * @param userID The user ID of the driver whose information is to be deleted.
+     */
     public void deleteDriverInfo(String userID) {
         String sql = "DELETE FROM Driver WHERE userID = ?";
 
@@ -327,6 +375,12 @@ public class Driver {
     }
 
 
+    
+    /**
+     * Displays driver information from the database.
+     *
+     * @param userID The user ID of the driver whose information is to be displayed.
+     */
     public void viewDriverInfo(String userID) {
         String sql_1 = "SELECT * FROM User WHERE userID = ?";
 
@@ -364,6 +418,11 @@ public class Driver {
     }
 
 
+    /**
+     * Adds a new vehicle and registers it to the driver in the database.
+     *
+     * @param userID The user ID of the driver.
+     */
     public void addVehicle(String userID) {
         scanner.nextLine();
         System.out.print("Enter Car License Number: ");
@@ -428,7 +487,9 @@ public class Driver {
         } 
     }
 
-    // Method to update an existing vehicle
+    /**
+     * Updates information of an existing vehicle in the database.
+     */
     public void updateVehicle() {
         scanner.nextLine();
         System.out.print("Enter Car License Number to update: ");
@@ -470,7 +531,9 @@ public class Driver {
         }
     }
 
-    // Method to delete an existing vehicle
+    /**
+     * Deletes an existing vehicle from the database.
+     */
     public void deleteVehicle() {
         scanner.nextLine();
         System.out.print("Enter Car License Number to delete: ");
@@ -519,8 +582,11 @@ public class Driver {
     }
 
 
-    // Method to view user's existing vehicle
-    public void viewVehicle(String userID) {
+    /**
+     * Displays information about the vehicles registered to the driver from the database.
+     *
+     * @param userID The user ID of the driver.
+     */    public void viewVehicle(String userID) {
         String sql = "SELECT * FROM Vehicle as v JOIN registered as r ON v.carLicenseNo = r.carLicenseNo WHERE r.userID = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, userID);
@@ -544,6 +610,12 @@ public class Driver {
         }
     }
 
+     
+     /**
+      * Displays information about the permit associated with the driver from the database.
+      *
+      * @param userID The user ID of the driver.
+      */
     public void viewPermitInfo(String userID) {
         String sql = "SELECT * FROM Permit WHERE userID = ?";
 
@@ -574,6 +646,11 @@ public class Driver {
     }
 
 
+    /**
+     * Displays information about citations associated with the driver's vehicles from the database.
+     *
+     * @param userID The user ID of the driver.
+     */
     public void viewCitations(String userID) {
         String sql_1 = "SELECT * FROM registered WHERE userID = ?";
 
@@ -623,6 +700,11 @@ public class Driver {
     }
 
 
+    /**
+     * Pays outstanding citations associated with the driver's vehicles in the database.
+     *
+     * @param userID The user ID of the driver.
+     */
     public void payCitations(String userID) {
         scanner.nextLine();
         System.out.print("Enter Vehicle's License Number: ");
@@ -673,6 +755,11 @@ public class Driver {
     }
 
 
+    /**
+     * Initiates an appeal against a citation associated with the driver's vehicles in the database.
+     *
+     * @param userID The user ID of the driver.
+     */
     public void appealCitations(String userID) {
         scanner.nextLine();
         System.out.print("Enter Vehicle's License Number: ");

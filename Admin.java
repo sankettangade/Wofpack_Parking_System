@@ -8,12 +8,21 @@ import java.io.FileInputStream;
 import java.util.Scanner;
 
 
+/**
+ * The Admin class represents an administrator with access to manage various aspects of a parking system.
+ */
 public class Admin {
     private Connection conn;
     private Properties prop;
     private String userID;
     private Scanner scanner;
 
+    
+    /**
+     * Constructs an Admin object with the specified user ID.
+     *
+     * @param userID The user ID of the administrator.
+     */
     public Admin(String userID) {
         this.userID = userID;
         this.scanner = new Scanner(System.in);
@@ -39,6 +48,9 @@ public class Admin {
         }
     }
 
+    /**
+     * Displays the welcome page and allows the administrator to choose various management options.
+     */
     public void show_welcome_page() {
         int choice = 0;
         do {
@@ -87,6 +99,10 @@ public class Admin {
         } while (choice != 8);
     }
 
+    
+    /**
+     * Displays the menu for managing parking lots and handles user input accordingly.
+     */
     private void parkingLotMenu() {
         int choice = 0;
         do {
@@ -122,6 +138,10 @@ public class Admin {
         } while (choice != 5);
     }
 
+    
+    /**
+     * Displays the menu for managing zones and handles user input accordingly.
+     */
     private void zoneMenu() {
         int choice = 0;
         do {
@@ -156,6 +176,10 @@ public class Admin {
         } while (choice != 5);
     }
 
+    
+    /**
+     * Displays the menu for managing spaces and handles user input accordingly.
+     */
     private void spaceMenu() {
 
         int choice = 0;
@@ -191,6 +215,10 @@ public class Admin {
         } while (choice != 5);
     }
 
+    
+    /**
+     * Displays the menu for managing permits and handles user input accordingly.
+     */
     private void permitMenu() {
         int choice = 0;
         do {
@@ -225,6 +253,10 @@ public class Admin {
         } while (choice != 5);
     }
 
+    
+    /**
+     * Displays the menu for managing vehicles and handles user input accordingly.
+     */
     private void vehicleMenu() {
         int choice = 0;
         do {
@@ -261,7 +293,9 @@ public class Admin {
     }
 
 
-    // Method to add a new parking lot
+    /**
+     * Adds a new parking lot to the database.
+     */
     public void addParkingLot() {
         scanner.nextLine();
         System.out.print("Enter Parking Lot ID: ");
@@ -289,7 +323,10 @@ public class Admin {
         }
     }
 
-    // Method to update an existing parking lot
+    
+    /**
+     * Updates an existing parking lot in the database.
+     */
     public void updateParkingLot() {
         scanner.nextLine();
         System.out.print("Enter Parking Lot ID to update: ");
@@ -317,8 +354,11 @@ public class Admin {
         }
     }
 
-    // Method to delete an existing parking lot
-    public void deleteParkingLot() {
+    
+    /**
+     * Deletes an existing parking lot from the database.
+     */   
+     public void deleteParkingLot() {
         scanner.nextLine();
         System.out.print("Enter Parking Lot ID to delete: ");
         String id = scanner.nextLine();
@@ -339,7 +379,11 @@ public class Admin {
         }
     }
 
-    // Method to view all parking lots
+    
+    
+     /**
+      * Displays information about all parking lots in the database.
+      */
     public void viewParkingLots() {
         String sql = "SELECT parkingLotID, name, address FROM ParkingLot";
 
@@ -356,7 +400,9 @@ public class Admin {
     }
     
    
-
+    /**
+     * Adds a new zone to the database.
+     */
     public void addZone() {
         scanner.nextLine();
         System.out.print("Enter Parking Lot ID for the new zone: ");
@@ -397,7 +443,9 @@ public class Admin {
         }
     }
 
-    // Method to update an existing zone
+    /**
+     * Updates an existing zone in the database.
+     */
     public void updateZone() {
         scanner.nextLine();
         System.out.print("Enter Parking Lot ID for the zone to update: ");
@@ -410,7 +458,9 @@ public class Admin {
         System.out.println("The Zone table only contains ID fields which are not typically updated.");
     }
 
-    // Method to delete an existing zone
+    /**
+     * Delete an existing zone in the database.
+     */
     public void deleteZone() {
         scanner.nextLine();
         System.out.print("Enter Parking Lot ID for the zone to delete: ");
@@ -451,7 +501,9 @@ public class Admin {
         }
     }
 
-    // Method to view all zones
+    /**
+     * Displays information about all zones in the database.
+     */
     public void viewZones() {
         scanner.nextLine();
         String sql = "SELECT parkingLotID, zoneID FROM Zone";
@@ -467,7 +519,9 @@ public class Admin {
         }
     }
 
-    // Method to add a new space
+    /**
+     * Adds a new space to the database.
+     */
     public void addSpace() {
         scanner.nextLine();
         System.out.print("Enter Parking Lot ID for the new space: ");
@@ -518,7 +572,9 @@ public class Admin {
         }
     }
 
-    // Method to update an existing space
+    /**
+     * Updates an existing space in the database.
+     */
     public void updateSpace() {
         scanner.nextLine();
         System.out.print("Enter Parking Lot ID for the space to update: ");
@@ -569,7 +625,9 @@ public class Admin {
         }
     }
 
-    // Method to delete an existing space
+    /**
+     * Deletes an existing space from the database.
+     */
     public void deleteSpace() {
         scanner.nextLine();
         System.out.print("Enter Parking Lot ID for the space to delete: ");
@@ -613,7 +671,9 @@ public class Admin {
         }
     }
 
-    // Method to view all spaces
+    /**
+     * Method to view all spaces in the parking lot.
+     */
     public void viewSpaces() {
         scanner.nextLine();
         String sql = "SELECT parkingLotID, zoneID, spaceNumber, spaceType, availability FROM Space";
@@ -632,6 +692,12 @@ public class Admin {
         }
     }
     
+    
+    /**
+     * Method to insert a new administrator into the system.
+     * 
+     * @param conn The database connection.
+     */
     private void insertIntoAdmin(Connection conn) {
 
         scanner.nextLine();
@@ -646,6 +712,12 @@ public class Admin {
 		}
     }
 
+    
+    /**
+     * Method to insert a new security personnel into the system.
+     * 
+     * @param conn The database connection.
+     */
     private void insertIntoSecurityPersonnel(Connection conn) {
     	 scanner.nextLine();
     	 System.out.println("Enter userID for the new Security Personnel: ");
@@ -659,164 +731,10 @@ public class Admin {
 		}
     }
 
-    
-    // Method to add a new permit
-    // public void addPermit() {
-    //     scanner.nextLine();
-        
-    //     System.out.print("Enter Parking Lot ID: ");
-    //     String parkingLotID = scanner.nextLine();
-    //     System.out.print("Enter Zone ID: ");
-    //     String zoneID = scanner.nextLine();
-    //     System.out.print("Enter Space Number: ");
-    //     int spaceNumber = scanner.nextInt();
-    //     scanner.nextLine(); 
-    
-        
-    //     String checkSpaceSql = "SELECT availability FROM Space WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
-    //     try (PreparedStatement checkSpaceStmt = conn.prepareStatement(checkSpaceSql)) {
-    //         checkSpaceStmt.setString(1, parkingLotID);
-    //         checkSpaceStmt.setString(2, zoneID);
-    //         checkSpaceStmt.setInt(3, spaceNumber);
-    //         ResultSet rs = checkSpaceStmt.executeQuery();
-    //         if (rs.next()) {
-    //             String availability = rs.getString("availability");
-    //             if ("N".equals(availability)) {
-    //                 System.out.println("The space is currently occupied. Cannot assign a permit.");
-    //                 return;
-    //             }
-    //         } else {
-    //             System.out.println("The specified space does not exist.");
-    //             return;
-    //         }
-    //     } catch (SQLException e) {
-    //         System.out.println("Error checking space availability: " + e.getMessage());
-    //         return;
-    //     }
-    
-        
-    //     System.out.print("Enter User ID: ");
-    //     String userID = scanner.nextLine();
-    
-    //     String checkDisabilityStatusSql = "SELECT disabilityStatus FROM Driver WHERE userID = ?";
-    //     String disabilityStatus = null;
-    //     try (PreparedStatement checkDisabilityStatusStmt = conn.prepareStatement(checkDisabilityStatusSql)) {
-    //         checkDisabilityStatusStmt.setString(1, userID);
-    //         ResultSet rs = checkDisabilityStatusStmt.executeQuery();
-    //         if (rs.next()) {
-    //             disabilityStatus = rs.getString("disabilityStatus");
-    //         }
-    //     } catch (SQLException e) {
-    //         System.out.println("Error checking disability status: " + e.getMessage());
-    //         return;
-    //     }
-    
-    //     if (disabilityStatus == null) {
-    //         System.out.println("User's disability status could not be determined.");
-    //         return;
-    //     }
-    
-    //     String checkSpaceSuitabilitySql = "SELECT spaceType FROM Space WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
-    //     try (PreparedStatement checkSpaceSuitabilityStmt = conn.prepareStatement(checkSpaceSuitabilitySql)) {
-    //         checkSpaceSuitabilityStmt.setString(1, parkingLotID);
-    //         checkSpaceSuitabilityStmt.setString(2, zoneID);
-    //         checkSpaceSuitabilityStmt.setInt(3, spaceNumber);
-    //         ResultSet rs = checkSpaceSuitabilityStmt.executeQuery();
-    //         if (rs.next()) {
-    //             String spaceType = rs.getString("spaceType");
-    //             if ("D".equals(disabilityStatus) && !"Handicap".equals(spaceType) ||
-    //                 !"D".equals(disabilityStatus) && "Handicap".equals(spaceType)) {
-    //                 System.out.println("The space is not suitable for the user's disability status.");
-    //                 return;
-    //             }
-    //         } else {
-    //             System.out.println("The specified space does not exist.");
-    //             return;
-    //         }
-    //     } catch (SQLException e) {
-    //         System.out.println("Error checking space suitability: " + e.getMessage());
-    //         return;
-    //     }
-    
-    //     System.out.print("Enter Permit ID: ");
-    //     String permitID = scanner.nextLine();
-    //     System.out.print("Enter Car License Number: ");
-    //     String carLicenseNo = scanner.nextLine();
-    //     System.out.print("Enter Start Date (YYYY-MM-DD): ");
-    //     String startDate = scanner.nextLine();
-    //     System.out.print("Enter Expiry Date (YYYY-MM-DD), leave blank if none: ");
-    //     String expDate = scanner.nextLine();
-    //     System.out.print("Enter Expiry Time (HH:MM:SS), leave blank if none: ");
-    //     String expTime = scanner.nextLine();
-    //     System.out.print("Enter Permit Type: ");
-    //     String permitType = scanner.nextLine();
-    
-    //     String addPermitSql = "INSERT INTO Permit (permitID, carLicenseNo, parkingLotID, zoneID, spaceNumber, startDate, expDate, expTime, userID, permitType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      
-    //     String updateSpaceSql = "UPDATE Space SET availability = 'N' WHERE parkingLotID = ? AND zoneID = ? AND spaceNumber = ?";
-    
-    //     try {
-    //         conn.setAutoCommit(false); // Start transaction
-    
-    //         // Insert the permit
-    //         try (PreparedStatement addPermitStmt = conn.prepareStatement(addPermitSql)) {
-    //             addPermitStmt.setString(1, permitID);
-    //             addPermitStmt.setString(2, carLicenseNo);
-    //             addPermitStmt.setString(3, parkingLotID);
-    //             addPermitStmt.setString(4, zoneID);
-    //             addPermitStmt.setInt(5, spaceNumber);
-    //             addPermitStmt.setDate(6, java.sql.Date.valueOf(startDate));
-    //             if (!expDate.isEmpty()) {
-    //                 addPermitStmt.setDate(7, java.sql.Date.valueOf(expDate));
-    //             } else {
-    //                 addPermitStmt.setNull(7, java.sql.Types.DATE);
-    //             }
-    //             if (!expTime.isEmpty()) {
-    //                 addPermitStmt.setTime(8, java.sql.Time.valueOf(expTime));
-    //             } else {
-    //                 addPermitStmt.setNull(8, java.sql.Types.TIME);
-    //             }
-    //             addPermitStmt.setString(9, userID);
-    //             addPermitStmt.setString(10, permitType);
-    //             int affectedRows = addPermitStmt.executeUpdate();
-    
-    //             if (affectedRows == 0) {
-    //                 throw new SQLException("Inserting permit failed, no rows affected.");
-    //             }
-    //         }
-    
-    //         try (PreparedStatement updateSpaceStmt = conn.prepareStatement(updateSpaceSql)) {
-    //             updateSpaceStmt.setString(1, parkingLotID);
-    //             updateSpaceStmt.setString(2, zoneID);
-    //             updateSpaceStmt.setInt(3, spaceNumber);
-    //             int affectedRows = updateSpaceStmt.executeUpdate();
-    
-    //             if (affectedRows == 0) {
-    //                 throw new SQLException("Updating space availability failed, no rows affected.");
-    //             }
-    //         }
-    
-    //         // Commit the transaction if all operations were successful
-    //         conn.commit();
-    //         System.out.println("Permit added and space marked as occupied.");
-    
-    //     } catch (SQLException e) {
-    //         System.out.println("Transaction failed: " + e.getMessage());
-    //         try {
-    //             conn.rollback(); // Rollback in case of any error
-    //         } catch (SQLException se) {
-    //             System.out.println("Error during rollback: " + se.getMessage());
-    //         }
-    //     } finally {
-    //         try {
-    //             conn.setAutoCommit(true); // Reset auto-commit to true
-    //         } catch (SQLException se) {
-    //             System.out.println("Error resetting auto-commit: " + se.getMessage());
-    //         }
-    //     }
-    // }
 
-    // Method to add a permit
+    /**
+     * Method to add a permit for parking.
+     */
     public void addPermit() {
         scanner.nextLine();
         
@@ -1020,7 +938,9 @@ public class Admin {
 
     
 
-    // Method to update an existing permit
+    /**
+     * Method to update an existing permit's details.
+     */
     public void updatePermit() {
         scanner.nextLine();
         System.out.print("Enter Permit ID to update: ");
@@ -1072,7 +992,9 @@ public class Admin {
         }
     }
 
-    // Method to delete an existing permit
+    /**
+     * Method to delete an existing permit from the system.
+     */
     public void deletePermit() {
         scanner.nextLine();
         System.out.print("Enter Permit ID to delete: ");
@@ -1145,7 +1067,9 @@ public class Admin {
     }
     
 
-    // Method to view permits
+    /**
+     * Method to view all permits in the system.
+     */
     public void viewPermit() {
         String sql = "SELECT * FROM Permit";
     
@@ -1176,7 +1100,9 @@ public class Admin {
     }
     
 
-    // Method to add a new vehicle
+    /**
+     * Method to add a new vehicle to the system.
+     */
     public void addVehicle() {
         scanner.nextLine();
         System.out.print("Enter Car License Number: ");
@@ -1227,7 +1153,9 @@ public class Admin {
         }
     }
 
-    // Method to update an existing vehicle
+    /**
+     * Method to update details of an existing vehicle in the system.
+     */
     public void updateVehicle() {
         scanner.nextLine();
         System.out.print("Enter Car License Number to update: ");
@@ -1278,7 +1206,9 @@ public class Admin {
         }
     }
 
-    // Method to delete an existing vehicle
+    /**
+     * Method to delete an existing vehicle from the system.
+     */
     public void deleteVehicle() {
         scanner.nextLine();
         System.out.print("Enter Car License Number to delete: ");
@@ -1316,7 +1246,9 @@ public class Admin {
         }
     }
 
-    // Method to view an existing vehicle
+    /**
+     * Method to view all vehicles in the system.
+     */
     public void viewVehicle() {
         String sql = "SELECT * FROM Vehicle";
     
@@ -1340,7 +1272,11 @@ public class Admin {
         }
     }
     
-
+    /**
+     * Closes the database connection and the scanner.
+     *
+     * @throws Exception If an error occurs during the closing process.
+     */
     public void close() throws Exception {
         if (conn != null && !conn.isClosed()) {
             conn.close();
