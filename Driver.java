@@ -639,7 +639,6 @@ public class Driver {
             }
 
             while (rs_1.next()) {
-            	System.out.println("Payment Status: " + rs_1.getString("paymentStatus"));
                 String paymentStatus = rs_1.getString("paymentStatus");
                 if (paymentStatus.equals("DUE")) {
                     paymentStatus = "PAID";
@@ -690,7 +689,6 @@ public class Driver {
             }
 
             while (rs_1.next()) {
-            	System.out.println("Appeal: " + rs_1.getString("appeal"));
                 String appeal = rs_1.getString("appeal");
                 if (appeal.equals("no")) {
                     appeal = "yes";
