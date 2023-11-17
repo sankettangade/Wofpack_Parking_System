@@ -93,7 +93,7 @@ public class SecurityPersonnel {
         String carLicenseNo = scanner.nextLine();
 
         // Check if the car has a valid permit
-        if (!checkValidPermit(carLicenseNo)) {
+        if (checkValidPermit(carLicenseNo)) {
             System.out.println("Car Permit not found or not expired. Citation cannot be created.");
             return;
         }
@@ -145,7 +145,7 @@ public class SecurityPersonnel {
 
     
     private boolean checkValidPermit(String carLicenseNo) {
-        String permitCheckQuery = "SELECT * FROM Permit WHERE carLicenseNo = ? AND expDate < CURRENT_DATE";
+        String permitCheckQuery = "SELECT * FROM Permit WHERE carLicenseNo = ? AND expDate > CURRENT_DATE";
         
         try (PreparedStatement permitCheckStmt = conn.prepareStatement(permitCheckQuery)) {
             permitCheckStmt.setString(1, carLicenseNo);
