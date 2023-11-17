@@ -111,7 +111,6 @@ public class SecurityPersonnel {
                 	scanner.nextLine();
                     System.out.print("Enter Start Time Range(YYYY-MM-DD): ");
                     String start = scanner.nextLine();
-                    scanner.nextLine();
                     System.out.print("Enter End Time Range(YYYY-MM-DD): ");
                     String end = scanner.nextLine();
                 	getLotCitationCount(start,end);
@@ -124,7 +123,7 @@ public class SecurityPersonnel {
                     break;
                 case 4:
                 	scanner.nextLine();
-                    System.out.print("Enter Parking ID: ");
+                    System.out.print("Enter Zone ID: ");
                     String p_id = scanner.nextLine();
                 	getPermittedEmployeesCount(p_id);
                     break;
@@ -138,19 +137,21 @@ public class SecurityPersonnel {
                 	scanner.nextLine();
                     System.out.print("Enter Parking ID: ");
                     String p_id_1 = scanner.nextLine();
-                    scanner.nextLine();
                     System.out.print("Enter Space Type: ");
                     String space_type = scanner.nextLine();
                 	getAvailableSpaces(p_id_1,space_type);
                 	break;
                 case 7:
-                	System.out.println("Exiting. Goodbye!");       
-					LoginApplication.main(null);
+                    System.out.println("Exiting. Goodbye!");     
+                    break;
                 default:
                     System.out.println("Invalid choice. Please try selecting from the Menu again");
+                    break;
             }
-        } while (choice != 6);
+        } while (choice != 7);
     }
+    
+    
 
     
     private void createCitation() {
@@ -161,7 +162,7 @@ public class SecurityPersonnel {
         String carLicenseNo = scanner.nextLine();
 
         // Check if the car has a valid permit
-        if (!checkValidPermit(carLicenseNo)) {
+        if (checkValidPermit(carLicenseNo)) {
             System.out.println("Car Permit not found or not expired. Citation cannot be created.");
             return;
         }
@@ -213,7 +214,7 @@ public class SecurityPersonnel {
 
     
     private boolean checkValidPermit(String carLicenseNo) {
-        String permitCheckQuery = "SELECT * FROM Permit WHERE carLicenseNo = ? AND expDate < CURRENT_DATE";
+        String permitCheckQuery = "SELECT * FROM Permit WHERE carLicenseNo = ? AND expDate > CURRENT_DATE";
         
         try (PreparedStatement permitCheckStmt = conn.prepareStatement(permitCheckQuery)) {
             permitCheckStmt.setString(1, carLicenseNo);
@@ -470,7 +471,7 @@ public class SecurityPersonnel {
 
     public void getPermittedEmployeesCount(String ZoneID) {
         if (ZoneID == null || ZoneID.isEmpty()) {
-            throw new IllegalArgumentException("Parking Lot ID cannot be null or empty.");
+            throw new IllegalArgumentException("Zone ID cannot be null or empty.");
         }
 
         String sql = "SELECT COUNT(DISTINCT userID) as userCount FROM Permit WHERE zoneID = ?";

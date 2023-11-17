@@ -10,35 +10,40 @@ import java.io.InputStream;
 
 public class LoginApplication {
 
+    
     public static void main(String[] args) {
         Properties prop = new Properties();
+        Connection conn = null;
+        Scanner scanner = new Scanner(System.in);
 
-        try (Scanner scanner = new Scanner(System.in);
-             InputStream input = new FileInputStream("config.properties")) {
-            
+        try {
+            InputStream input = new FileInputStream("config.properties");
             prop.load(input);
+            input.close(); // Close the input stream after use
+
             String url = prop.getProperty("db.url");
             String user = prop.getProperty("db.user");
             String dbPassword = prop.getProperty("db.password");
-            Connection conn = DriverManager.getConnection(url, user, dbPassword);
+
+            conn = DriverManager.getConnection(url, user, dbPassword);
             conn.setAutoCommit(false);
             
             int choice = 0;
             do {
                 System.out.println("\nWelcome to Wolfpack Parking System!");
                 System.out.println("-----------------------------------------------");
-            System.out.println("1. Login");
-            System.out.println("2. New Driver Sign-up");
-            System.out.println("3. Exit");
-            choice = scanner.nextInt();
+                System.out.println("1. Login");
+                System.out.println("2. New Driver Sign-up");
+                System.out.println("3. Exit");
+                choice = scanner.nextInt();
+
                 switch (choice) {
                     case 1:
-                    	login(scanner, conn);
+                        login(scanner, conn);
                         break;
                     case 2:
-                    	createUserAccount(scanner, conn);
+                        createUserAccount(scanner, conn);
                         break;
-  
                     case 3:
                         System.out.println("Exiting. Goodbye!");
                         break;
@@ -49,6 +54,23 @@ public class LoginApplication {
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close(); // Close the database connection here
+                    if (conn.isClosed()) {
+                        System.out.println("Database connection successfully closed.");
+                    } else {
+                        System.out.println("Database connection may still be open.");
+                    }
+                } else {
+                    System.out.println("Database connection was already closed or not established.");
+                }
+            } catch (SQLException e) {
+                System.out.println("Error occurred while closing the database connection.");
+                e.printStackTrace();
+            }
+            scanner.close(); // Close the scanner here
         }
     }
 
